@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "216794913083",
+    "firebase_url": "https://mytime-capstone-hale.firebaseio.com",
+    "project_id": "mytime-capstone-hale",
+    "storage_bucket": "mytime-capstone-hale.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216794913083:android:e7abcc88bdd940df9cbf1e",
+        "android_client_info": {
+          "package_name": "ca.mohawk.le.mytime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216794913083-clsrplc3vpko9v5miva2p9ags17kemtk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.mohawk.le.mytime",
+            "certificate_hash": "1bbb700f9cfc76ca7f5c9bd9f8a75087151b696f"
+          }
+        },
+        {
+          "client_id": "216794913083-mdbfk8fent4f89p5l5d4t7nfe60pm6s0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_U3-Ml97uJuFCfFemuLeDlk38ETbXEG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216794913083-mdbfk8fent4f89p5l5d4t7nfe60pm6s0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

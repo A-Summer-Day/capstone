@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/personal"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_profile"
+            android:title="Profile" />
+
+        <item android:id="@+id/nav_settings"
+            android:title="Settings" />
+    </group>
+    <group
+        android:id="@+id/tracking"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_period_tracking"
+            android:title="Period Tracking" />
+
+        <item android:id="@+id/nav_sexual_activity_tracking"
+            android:title="Sexual Activity Tracking" />
+
+        <item android:id="@+id/nav_test_tracking"
+            android:title="Test Tracking" />
+
+        <item android:id="@+id/nav_mood_tracking"
+            android:title="Mood Tracking" />
+
+        <item android:id="@+id/nav_temperature_tracking"
+            android:title="Temperature Tracking" />
+
+    </group>
+    <group
+        android:id="@+id/others"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_graphs_and_reports"
+            android:title="Graphs and Reports" />
+
+        <item android:id="@+id/nav_appointments"
+            android:title="Appointments" />
+
+    </group>
+    <group
+        android:id="@+id/logout"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_logout"
+            android:title="Log Out" />
+
+    </group>
+
+</menu>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">myTime</string>
+    <string name="login_button">Login</string>
+    <string name="register_button">Register</string>
+    <string name="open" />
+    <string name="close" />
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile_description"><u>Personal Info</u></string>
+    <string name="weight_label">Weight:</string>
+    <string name="moods_label">Moods:</string>
+    <string name="symptoms_label">Symptoms:</string>
+    <string name="moods_hint">Moods</string>
+    <string name="weight_hint">Weight</string>
+    <string name="symptoms_hint">Symptoms</string>
+
+</resources>
