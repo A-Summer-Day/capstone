@@ -9,14 +9,13 @@
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="10dp" >
 
         <TextView
             android:id="@+id/test_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:text="Name"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -24,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
-            android:text="Date"
             android:textAlignment="textEnd"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -34,23 +32,22 @@
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:id="@+id/test_address"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:text="Doctor"
-            android:textAlignment="textEnd"
-            app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginBottom="10dp"
+        >
 
         <TextView
             android:id="@+id/test_doctor"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:textAlignment="textEnd"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/test_address"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
-            android:text="Address"
             android:textAlignment="textStart"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
