@@ -1,6 +1,141 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/sexualActivityTrackingLayout"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#F8BFD0"
+android:baselineAligned="false"
+android:orientation="vertical"
+tools:context=".SexualActivityTrackingFragment">
+
+<RelativeLayout
+    android:id="@+id/topHalf"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SexualActivityTrackingFragment"/>
+    android:layout_weight="1">
+
+
+    <CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/CalendarTheme"
+        />
+
+</RelativeLayout>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/bottomHalf"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    tools:layout_editor_absoluteY="366dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logTemperature"
+        tools:layout_editor_absoluteX="16dp">
+
+        <EditText
+            android:id="@+id/with_whom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:inputType="textPersonName"
+            android:textAlignment="textStart"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/temperature_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <CheckBox
+            android:id="@+id/logProtection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:onClick="onClick"
+            app:layout_constraintStart_toEndOf="@+id/protection_label"
+            app:layout_constraintTop_toBottomOf="@+id/with_whom" />
+
+        <CheckBox
+            android:id="@+id/logOnPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="18dp"
+            android:onClick="onClick"
+            app:layout_constraintStart_toEndOf="@+id/on_period_label"
+            app:layout_constraintTop_toBottomOf="@+id/logProtection" />
+
+        <ImageButton
+            android:id="@+id/editSexualActivityDetailsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:contentDescription="Save and Edit Button"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logOnPeriod" />
+
+
+        <TextView
+            android:id="@+id/temperature_label"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="With whom:"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/protection_label"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:text="Protection?"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperature_label" />
+
+        <TextView
+            android:id="@+id/on_period_label"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:text="On Period?"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/protection_label" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <CheckBox
+        android:id="@+id/logTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:onClick="onClick"
+        android:text="Log Activity?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

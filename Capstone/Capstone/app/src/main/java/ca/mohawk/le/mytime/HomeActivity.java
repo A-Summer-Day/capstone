@@ -90,14 +90,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //fragmentTransaction.commit();
                 break;
             case R.id.nav_mood_tracking:
-                //SexualActivityTrackingFragment sexualActivityTrackingPage = new SexualActivityTrackingFragment();
-                //fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingPage);
-                //fragmentTransaction.commit();
+                MoodTrackingFragment moodTrackingPage = new MoodTrackingFragment();
+                fragmentTransaction.replace(R.id.generalLayout, moodTrackingPage);
+                fragmentTransaction.commit();
                 break;
             case R.id.nav_temperature_tracking:
-                //SexualActivityTrackingFragment sexualActivityTrackingPage = new SexualActivityTrackingFragment();
-                //fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingPage);
-                //fragmentTransaction.commit();
+                TemperatureTrackingFragment temperatureTrackingPage = new TemperatureTrackingFragment();
+                fragmentTransaction.replace(R.id.generalLayout, temperatureTrackingPage);
+                fragmentTransaction.commit();
+                break;
+            case R.id.nav_appointments:
+                AppointmentFragment appointmentFragment = new AppointmentFragment();
+                fragmentTransaction.replace(R.id.generalLayout, appointmentFragment);
+                fragmentTransaction.commit();
                 break;
             case R.id.nav_logout:
                 mAuth.signOut();

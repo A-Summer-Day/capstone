@@ -1,7 +1,6 @@
 package ca.mohawk.le.mytime;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +26,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -40,11 +37,11 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-    //StorageReference imageRef = storageRef.child("profile.jpg");
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference().child("users");
     private View view;
     private CalendarView calendar;
+    //private MaterialCalendarView calendar;
     private CheckBox logPeriod;
     private AppCompatImageButton editPeriodDetailsButton;
     private EditText getSymptoms, getMoods, getWeight;
@@ -68,15 +65,16 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_period_tracking, container, false);
         calendar = view.findViewById(R.id.calendar);
-        logPeriod = view.findViewById(R.id.logPeriod);
+        logPeriod = view.findViewById(R.id.logTemperature);
 
         calendar.setOnDateChangeListener(this);
+        //calendar.getSelectedDate();
         editPeriodDetailsButton = view.findViewById(R.id.editPeriodDetailsButton);
         logPeriod.setOnClickListener(this);
         editPeriodDetailsButton.setOnClickListener(this);
 
-        getSymptoms = view.findViewById(R.id.symptoms);
-        getMoods = view.findViewById(R.id.moods);
+        getSymptoms = view.findViewById(R.id.with_whom);
+        getMoods = view.findViewById(R.id.moods_spinner);
         getWeight = view.findViewById(R.id.weight);
 
         getSymptoms.setEnabled(false);
@@ -151,6 +149,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
         logPeriod.setChecked(false);
         editInfo.setVisibility(View.GONE);
+        Long date = calendar.getDate();
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -191,7 +190,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             case R.id.editPeriodDetailsButton:
                 updating = updateInfo(updating);
                 break;
-            case R.id.logPeriod:
+            case R.id.logTemperature:
                 if(checked){
                     myref.child("period-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/logged").setValue("True");
@@ -214,8 +213,8 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     }
 
     private boolean updateInfo(boolean updating){
-        getSymptoms = view.findViewById(R.id.symptoms);
-        getMoods = view.findViewById(R.id.moods);
+        getSymptoms = view.findViewById(R.id.with_whom);
+        getMoods = view.findViewById(R.id.moods_spinner);
         getWeight = view.findViewById(R.id.weight);
 
         if(updating){

@@ -14,5 +14,21 @@
     <string name="moods_hint">Moods</string>
     <string name="weight_hint">Weight</string>
     <string name="symptoms_hint">Symptoms</string>
+    <string name="upcoming_appointments_label">Upcoming Appointments</string>
+    <string name="appointments_label">Appointments</string>
+    <string name="add_button">Add Button</string>
+
+
+    <string-array name="moods_array">
+        <item>Happy</item>
+        <item>Neutral</item>
+        <item>Sad</item>
+    </string-array>
+
+    <string-array name="list">
+        <item>Choice one</item>
+        <item>Choice two</item>
+        <item>Choice three</item>
+    </string-array>
 
 </resources>
