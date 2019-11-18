@@ -33,7 +33,7 @@ public class AppointmentAdapter extends ArrayAdapter<Appointment> {
         name.setText(appointment.name);
         address.setText(appointment.address);
         doctor.setText(appointment.doctor);
-        date.setText(appointment.date);
+        date.setText(appointment.date + " " + appointment.time);
 
         return convertView;
     }

@@ -14,12 +14,14 @@ public class Appointment {
     String doctor;
     String address;
     String date;
+    String time;
 
-    public Appointment(String name, String doctor, String address, String date) {
+    public Appointment(String name, String doctor, String address, String date, String time) {
         this.name = name;
         this.doctor = doctor;
         this.address = address;
         this.date = date;
+        this.time = time;
     }
 
 }

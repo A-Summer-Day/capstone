@@ -33,8 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -79,18 +81,31 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
 
                 }else{
                     for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String year = ds.getKey();
-                        String month = ds.child(year).getKey();
-                        String day = ds.child(year).child(month).getKey();
-                        String date = ds.getKey();
+                        //String year = ds.getKey();
+                        //String month = ds.child(year).getKey();
+                        //String day = ds.child(year).child(month).getKey();
+                        String date = ds.getKey().replace("-", "/");
+                        try{
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                            Date dateFormatted = sdf.parse(date);
+                            Log.d("BEFORE OR AFTER", (new Date()).toString());
+                            if(new Date().after(dateFormatted)){
+                                Log.d("BEFORE OR AFTER", ds.getRef().toString());
+                                ds.getRef().removeValue();
+                                //myref.child(ds.getKey()).removeValue();
+                            }else{
+                                Log.d("BEFORE OR AFTER", "BEFORE");
+                                String name = ds.child("name").getValue().toString();
+                                String address = ds.child("address").getValue().toString();
+                                String doctor = ds.child("doctor").getValue().toString();
+                                String time = ds.child("time").getValue().toString();
+                                Appointment appointment = new Appointment(name,doctor,address,date,time);
+                                appointments.add(appointment);
+                            }
+                        }catch(ParseException e){
 
-                        String name = ds.child("name").getValue().toString();
-                        String address = ds.child("address").getValue().toString();
-                        String doctor = ds.child("doctor").getValue().toString();
-                        Appointment appointment = new Appointment(name,doctor,address,date);
-                        appointments.add(appointment);
+                        }
                     }
-
                     listView.setAdapter(adapter);
                 }
             }
