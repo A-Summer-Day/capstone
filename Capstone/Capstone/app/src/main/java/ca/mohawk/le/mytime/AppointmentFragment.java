@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -46,6 +47,7 @@ import java.util.List;
 public class AppointmentFragment extends Fragment implements View.OnClickListener {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference().child("users");
+    private FirebaseFunctions mFunctions;
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
     private String currentUserId;
@@ -65,6 +67,7 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_appointment, container, false);
         fm = getFragmentManager();
+        mFunctions = FirebaseFunctions.getInstance();
         fragmentTransaction = fm.beginTransaction();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();

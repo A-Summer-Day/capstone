@@ -95,8 +95,10 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                 doctor = getDoctor.getText().toString();
                 address = getAddress.getText().toString();
 
+
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(selectedYear) &&
-                        !TextUtils.isEmpty(selectedMonth) && !TextUtils.isEmpty(selectedDay)){
+                        !TextUtils.isEmpty(selectedMonth) && !TextUtils.isEmpty(selectedDay)
+                        && !TextUtils.isEmpty(selectedHour) && !TextUtils.isEmpty(selectedMinute)){
 
                     String date = selectedMonth + "-" + selectedDay + "-" + selectedYear;
                     String time = selectedHour + ":" + selectedMinute;
@@ -118,7 +120,7 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                     fragmentTransaction.commit();
 
                 }else{
-                    Toast.makeText(getActivity(), "Appointment name and date cannot be blank.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Appointment name and date time cannot be blank.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.test_date:
