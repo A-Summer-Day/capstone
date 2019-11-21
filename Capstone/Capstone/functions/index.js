@@ -12,14 +12,7 @@ admin.initializeApp();
 const CUT_OFF_TIME = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds.
 var database = admin.database();
 
-exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async context => {
-  //var dbRef = admin.database().ref('/appointments');
-  //const uid = context.auth.uid;
-  //const uid = firebase.auth().currentUser.uid;
-  /* var ref = database.ref("/users");
-  ref.once("value", function(snapshot) {
-	console.log(snapshot.val());
-	}); */
+exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(async context => {
 	var users = await listAllUsers();
 	users.forEach(function(user){
 		var ref = database.ref('/users/' + user + '/appointments/');
@@ -31,10 +24,19 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
 				var currentDate = new Date();
 				var upcoming = date.getTime() - currentDate.getTime() <= CUT_OFF_TIME
 				if(upcoming){
-					console.log(date);
+					console.log("Upcoming: " + date);
+					const payload = {
+						  notification: {
+							  title: 'Upcoming appointment!',
+							  body: 'You have an upcoming appointment!'
+						  }
+					 };
+					 admin.messaging().sendToTopic("notifications", payload);
 				}
 				
 			});
+			
+			
 		});
 	});
 	return null;
@@ -43,7 +45,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
 async function listAllUsers(users = [], nextPageToken) {
 	const result = await admin.auth().listUsers(1000, nextPageToken);
 	result.users.forEach(function(userRecord) {
-        //console.log('user', userRecord.toJSON());
+        console.log('user', userRecord.toJSON());
 		users = users.concat(userRecord.uid);
     });
 	
@@ -66,7 +68,7 @@ async function listAllUsers(users = [], nextPageToken) {
     .catch(function(error) {
       console.log('Error listing users:', error);
     }); */
-	console.log("Users: " + users);
+	//console.log("Users: " + users);
 	return users;
 }
 
