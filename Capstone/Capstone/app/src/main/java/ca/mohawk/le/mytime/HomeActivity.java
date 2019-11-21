@@ -2,11 +2,21 @@ package ca.mohawk.le.mytime;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -21,13 +31,57 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout myDrawer;
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private String currentUserId;
+    private String token;
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myref = database.getReference().child("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful()) {
+                    Log.w("GET TOKEN", "getInstanceId failed", task.getException());
+                    return;
+                }
+
+                // Get new Instance ID token
+                token = task.getResult().getToken();
+
+                // Log and toast
+                //String msg = getString(R.string.msg_token_fmt, token);
+                Log.d("GET TOKEN", token);
+                //Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = currentUser.getUid();
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    myref.child(currentUserId).child("personal-info").child("token").setValue(token);
+                    Log.d("GET TOKEN", "TOKEN SET");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        myref.child(currentUserId).child("personal-info").child("token").
+                addListenerForSingleValueEvent(valueEventListener);
 
         mAuth = FirebaseAuth.getInstance();
 
