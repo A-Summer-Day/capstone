@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-                    myref.child(currentUserId).child("personal-info").child("token").setValue(token);
+                    myref.child(currentUserId).child("token").setValue(token);
                     Log.d("GET TOKEN", "TOKEN SET");
                 }
             }
@@ -80,8 +80,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
-        myref.child(currentUserId).child("personal-info").child("token").
-                addListenerForSingleValueEvent(valueEventListener);
+        myref.child(currentUserId).child("token").addListenerForSingleValueEvent(valueEventListener);
 
         mAuth = FirebaseAuth.getInstance();
 
