@@ -36,14 +36,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String token;
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+
+    FirebaseDatabase database;
+    DatabaseReference myref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        if(database ==  null){
+            database = FirebaseDatabase.getInstance();
+            database.setPersistenceEnabled(true);
+        }
 
+        myref  = database.getReference().child("users");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -122,9 +128,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.replace(R.id.generalLayout, profilePage);
                 fragmentTransaction.commit();
                 break;
-            case R.id.nav_settings:
-                SettingsFragment settingsPage = new SettingsFragment();
-                fragmentTransaction.replace(R.id.generalLayout, settingsPage);
+            case R.id.nav_home:
+                WelcomeFragment welcomePage = new WelcomeFragment();
+                fragmentTransaction.replace(R.id.generalLayout, welcomePage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_period_tracking:
@@ -137,10 +143,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingPage);
                 fragmentTransaction.commit();
                 break;
-            case R.id.nav_test_tracking:
-                //SexualActivityTrackingFragment sexualActivityTrackingPage = new SexualActivityTrackingFragment();
-                //fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingPage);
-                //fragmentTransaction.commit();
+            case R.id.nav_health_tests:
+                HealthTestFragment healthTestPage = new HealthTestFragment();
+                fragmentTransaction.replace(R.id.generalLayout, healthTestPage);
+                fragmentTransaction.commit();
                 break;
             case R.id.nav_mood_tracking:
                 MoodTrackingFragment moodTrackingPage = new MoodTrackingFragment();
@@ -153,8 +159,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_appointments:
-                AppointmentFragment appointmentFragment = new AppointmentFragment();
-                fragmentTransaction.replace(R.id.generalLayout, appointmentFragment);
+                AppointmentFragment appointmentPage = new AppointmentFragment();
+                fragmentTransaction.replace(R.id.generalLayout, appointmentPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_logout:

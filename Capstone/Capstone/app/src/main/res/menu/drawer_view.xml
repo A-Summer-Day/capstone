@@ -4,12 +4,12 @@
     <group
         android:id="@+id/personal"
         android:checkableBehavior="single">
+        <item android:id="@+id/nav_home"
+            android:title="Home" />
 
         <item android:id="@+id/nav_profile"
             android:title="Profile" />
 
-        <item android:id="@+id/nav_settings"
-            android:title="Settings" />
     </group>
     <group
         android:id="@+id/tracking"
@@ -20,9 +20,6 @@
 
         <item android:id="@+id/nav_sexual_activity_tracking"
             android:title="Sexual Activity Tracking" />
-
-        <item android:id="@+id/nav_test_tracking"
-            android:title="Test Tracking" />
 
         <item android:id="@+id/nav_mood_tracking"
             android:title="Mood Tracking" />
@@ -40,6 +37,9 @@
 
         <item android:id="@+id/nav_appointments"
             android:title="Appointments" />
+        <item
+            android:id="@+id/nav_health_tests"
+            android:title="Health Tests" />
 
     </group>
     <group

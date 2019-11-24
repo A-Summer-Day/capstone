@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -52,10 +54,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-    StorageReference imageRef = storageRef.child("profile.jpg");
+    //StorageReference imageRef = storageRef.child("profile.jpg");
+    StorageReference imageRef;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference();
+    private FragmentManager fm;
+    private FragmentTransaction fragmentTransaction;
     private EditText name, dob, email, phone;
+    private Button changePasswordButton;
     private AppCompatImageButton editButton;
     private URI filePath;
     private View view;
@@ -71,7 +77,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_profile, container, false);
@@ -79,11 +85,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         dob = view.findViewById(R.id.dateOfBirth);
         email = view.findViewById(R.id.emailAddress);
         phone = view.findViewById(R.id.phoneNumber);
-
+        changePasswordButton = view.findViewById(R.id.changePasswordButton);
+        changePasswordButton.setOnClickListener(this);
+        fm = getFragmentManager();
+        fragmentTransaction = fm.beginTransaction();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
+
         if(currentUser != null){
             email.setText(currentUser.getEmail());
+            imageRef = storageRef.child("profile_" + currentUserId);
 
         }
 
@@ -126,7 +137,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 new OnSuccessListener<StorageMetadata>() {
                     @Override
                     public void onSuccess(StorageMetadata storageMetadata) {
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(getContext()).load(uri).fitCenter().into(profilePicture);
+                            }
+                        });
+
                         Toast.makeText(getActivity(), "Profile picture existed!", Toast.LENGTH_SHORT).show();
+                        Log.d("IMAGEREF", imageRef.toString());
                     }
                 }
                 //
@@ -148,8 +167,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()){
             case R.id.profilePicture:
                 chooseImage();
+                break;
             case R.id.editInfoButton:
                 updating = updateInfo(updating);
+                break;
+            case R.id.changePasswordButton:
+                ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
+                fragmentTransaction.replace(R.id.generalLayout, changePasswordFragment);
+                fragmentTransaction.commit();
+                break;
         }
     }
 

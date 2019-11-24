@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
+    android:id="@+id/newAppointmentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#98E0EC"
-    tools:context=".NewAppointmentFragment" >
+    tools:context=".NewAppointmentFragment">
 
 
     <TextView
-        android:id="@+id/new_appointment_label"
+        android:id="@+id/new_healthtest_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -33,7 +33,7 @@
         android:text="Test"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_appointment_label" />
+        app:layout_constraintTop_toBottomOf="@+id/new_healthtest_label" />
 
     <TextView
         android:id="@+id/test_date_label"
@@ -78,7 +78,7 @@
         android:hint="Test Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_appointment_label" />
+        app:layout_constraintTop_toBottomOf="@+id/new_healthtest_label" />
 
     <EditText
         android:id="@+id/test_doctor"
@@ -133,8 +133,8 @@
         android:layout_marginEnd="20dp"
         android:clickable="false"
         android:cursorVisible="false"
-        android:focusable="false"
         android:ems="10"
+        android:focusable="false"
         android:hint="Test Date"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
@@ -148,8 +148,8 @@
         android:layout_marginEnd="20dp"
         android:clickable="false"
         android:cursorVisible="false"
-        android:focusable="false"
         android:ems="10"
+        android:focusable="false"
         android:hint="Test Time"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"

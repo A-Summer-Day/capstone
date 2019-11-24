@@ -5,7 +5,7 @@
     android:id="@+id/profileLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background"
+    android:background="#98E0EC"
     tools:context=".ProfileFragment">
 
 
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         android:text="@string/profile_description"
         android:textColor="@color/browser_actions_title_color"
         android:textSize="18sp"
@@ -107,7 +107,6 @@
         android:layout_height="120dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:alpha="0.25"
         android:clickable="true"
         android:contentDescription="Profile Picture"
         android:focusable="true"
@@ -162,5 +161,15 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_label" />
+
+    <Button
+        android:id="@+id/changePasswordButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Change Password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

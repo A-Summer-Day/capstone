@@ -5,13 +5,15 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -45,7 +47,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AppointmentFragment extends Fragment implements View.OnClickListener {
+public class HealthTestFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference().child("users");
     private FragmentManager fm;
@@ -54,9 +56,9 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
     private FirebaseUser currentUser;
     private SimpleDateFormat sdf;
     private View view;
-    private ArrayList<Appointment> appointments;
+    private ArrayList<HealthTest> healthTests;
 
-    public AppointmentFragment() {
+    public HealthTestFragment() {
         // Required empty public constructor
     }
 
@@ -65,16 +67,15 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_appointment, container, false);
+        view = inflater.inflate(R.layout.fragment_health_test, container, false);
         fm = getFragmentManager();
         fragmentTransaction = fm.beginTransaction();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
         myref = myref.child(currentUserId);
-        appointments = new ArrayList<>();
-        final AppointmentAdapter adapter = new AppointmentAdapter(getActivity().getApplicationContext(),appointments);
-
-        final ListView listView = view.findViewById(R.id.appointment_list);
+        healthTests = new ArrayList<>();
+        final HealthTestAdapter adapter = new HealthTestAdapter(getActivity().getApplicationContext(),healthTests);
+        final ListView listView = view.findViewById(R.id.healthtest_list);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -83,24 +84,11 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
 
                 }else{
                     for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                        String date = ds.getKey().replace("-", "/");
-                        try{
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                            Date dateFormatted = sdf.parse(date);
-                            Log.d("BEFORE OR AFTER", (new Date()).toString());
-                            if(new Date().after(dateFormatted)){
-                                ds.getRef().removeValue();
-                            }else{
-                                String name = ds.child("name").getValue().toString();
-                                String address = ds.child("address").getValue().toString();
-                                String doctor = ds.child("doctor").getValue().toString();
-                                String time = ds.child("time").getValue().toString();
-                                Appointment appointment = new Appointment(name,doctor,address,date,time);
-                                appointments.add(appointment);
-                            }
-                        }catch(ParseException e){
-
-                        }
+                        String name = ds.getKey();
+                        String frequency = ds.child("frequency").getValue().toString();
+                        String unit = ds.child("unit").getValue().toString();
+                        HealthTest healthTest = new HealthTest(name,frequency,unit);
+                        healthTests.add(healthTest);
                     }
                     listView.setAdapter(adapter);
                 }
@@ -112,10 +100,10 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
             }
         };
 
-        myref.child("appointments").addListenerForSingleValueEvent(valueEventListener);
+        myref.child("healthtests").addListenerForSingleValueEvent(valueEventListener);
         ImageButton addButton = view.findViewById(R.id.add_button);
         addButton.setOnClickListener(this);
-
+        listView.setOnItemClickListener(this);
         return view;
     }
 
@@ -123,10 +111,16 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_button:
-                NewAppointmentFragment newAppointmentFragment = new NewAppointmentFragment();
-                fragmentTransaction.replace(R.id.generalLayout, newAppointmentFragment);
+                NewHealthTestFragment newHealthTestFragment = new NewHealthTestFragment();
+                fragmentTransaction.replace(R.id.generalLayout, newHealthTestFragment);
                 fragmentTransaction.commit();
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        HealthTest healthTest = (HealthTest) parent.getAdapter().getItem(position);
+        //Toast.makeText(getActivity(), healthTest.name, Toast.LENGTH_SHORT).show();
     }
 }

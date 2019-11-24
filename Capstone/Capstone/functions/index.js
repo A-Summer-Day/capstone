@@ -8,6 +8,7 @@ const functions = require('firebase-functions');
 // });
 
 const admin = require('firebase-admin');
+const test_user_ID = 'TQeQuLtjkdWp6kEVxGPhHAPNKuv1'; 
 admin.initializeApp();
 const CUT_OFF_TIME = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds.
 var database = admin.database();
@@ -15,6 +16,14 @@ var database = admin.database();
 exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(async context => {
 	var users = await listAllUsers();
 	users.forEach(function(user){
+		var token = '';
+		var ref = database.ref('/users/' + user + '/token');
+		ref.on("value", function(snapshot) {
+			console.log(snapshot.val());
+			token = snapshot.val();
+		}, function (errorObject) {
+			console.log("The read failed: " + errorObject.code);
+		});
 		var ref = database.ref('/users/' + user + '/appointments/');
 		ref.once('value', function(snapshot) {
 			snapshot.forEach(function(childSnapshot) {
@@ -25,13 +34,25 @@ exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(as
 				var upcoming = date.getTime() - currentDate.getTime() <= CUT_OFF_TIME
 				if(upcoming){
 					console.log("Upcoming: " + date);
+					
 					const payload = {
-						  notification: {
-							  title: 'Upcoming appointment!',
-							  body: 'You have an upcoming appointment!'
-						  }
+						'notification': {
+							title: 'Upcoming appointment!',
+							body: 'You have an upcoming appointment on ' + getDate + ' at ' + time + '.'
+						},
+						'data' : {
+							title: 'Upcoming appointment!',
+							body: 'You have an upcoming appointment on ' + getDate + ' at ' + time + '.'
+						}	
 					 };
-					 admin.messaging().sendToTopic("notifications", payload);
+					 
+					 admin.messaging().sendToDevice(token, payload)
+					 .then(function (response) {
+						console.log("Successfully sent message:", response);
+					 })
+					 .catch(function (error) {
+						console.log("Error sending message:", error);
+					 });
 				}
 				
 			});
@@ -74,5 +95,6 @@ async function listAllUsers(users = [], nextPageToken) {
 
 function getUpcomingAppointments(){
 }
-	
 
+
+ 
