@@ -9,7 +9,7 @@
     tools:context=".WelcomeFragment">
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/welcome_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/welcome_sublabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -30,7 +30,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_label" />
 
     <Button
         android:id="@+id/trackPeriodButton"
@@ -40,7 +40,7 @@
         android:layout_marginTop="40dp"
         android:text="Track Period"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_sublabel" />
 
     <Button
         android:id="@+id/trackTemperatureButton"
@@ -50,7 +50,7 @@
         android:layout_marginEnd="20dp"
         android:text="Track Temperature"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_sublabel" />
 
     <Button
         android:id="@+id/trackSexualActivitiesButton"
