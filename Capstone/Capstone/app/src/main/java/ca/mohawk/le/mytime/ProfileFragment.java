@@ -212,7 +212,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         Bitmap bitmap = ((BitmapDrawable)profilePicture.getDrawable()).getBitmap();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
         UploadTask uploadTask = imageRef.putBytes(data);
