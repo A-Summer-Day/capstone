@@ -144,8 +144,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             }
                         });
 
-                        Toast.makeText(getActivity(), "Profile picture existed!", Toast.LENGTH_SHORT).show();
-                        Log.d("IMAGEREF", imageRef.toString());
+                        //Toast.makeText(getActivity(), "Profile picture existed!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 //

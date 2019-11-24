@@ -163,6 +163,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.replace(R.id.generalLayout, appointmentPage);
                 fragmentTransaction.commit();
                 break;
+            case R.id.nav_graphs_and_reports:
+                ReportsFragment reportsFragment = new ReportsFragment();
+                fragmentTransaction.replace(R.id.generalLayout, reportsFragment);
+                fragmentTransaction.commit();
+                break;
             case R.id.nav_logout:
                 mAuth.signOut();
                 updateUI(null);
