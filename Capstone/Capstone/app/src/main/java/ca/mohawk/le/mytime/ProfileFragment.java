@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -140,7 +141,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                Glide.with(getContext()).load(uri).fitCenter().into(profilePicture);
+                                Glide.with(getContext()).load(uri).apply(new RequestOptions().override(120, 120)).into(profilePicture);
                             }
                         });
 
