@@ -5,7 +5,7 @@
     android:id="@+id/profileLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8098E0EC"
+    android:background="#98E0EC"
     tools:context=".ProfileFragment">
 
 
@@ -107,12 +107,13 @@
         android:layout_height="120dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
         android:clickable="true"
         android:contentDescription="Profile Picture"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description"
-        app:srcCompat="@drawable/profile_picture_template" />
+        app:srcCompat="@drawable/profile" />
 
     <TextView
         android:id="@+id/name_label"
