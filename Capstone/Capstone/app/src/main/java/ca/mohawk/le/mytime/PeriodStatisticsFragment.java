@@ -134,6 +134,7 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                         try{
                                             Date d = fullFormat.parse(dateString);
                                             dates.add(d);
+                                            Log.d("REF ARRAY", Integer.toString(dates.size()));
                                         }catch(ParseException e){
                                             e.printStackTrace();
                                         }
@@ -172,6 +173,7 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                                 try{
                                                     Date d = fullFormat.parse(dateString);
                                                     dates.add(d);
+                                                    Log.d("REF ARRAY", Integer.toString(dates.size()));
                                                 }catch(ParseException e){
                                                     e.printStackTrace();
                                                 }
@@ -202,19 +204,23 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
 
                                 totalDays += count;
                                 totalCycles += 1;
+                                
+                                if(dates.size() > 0){
+                                    dates.remove( dates.size() - 1 );
+                                    dates.remove(0);
+                                }
+
+                                Log.d("REF ARRAY REMOVED", Integer.toString(dates.size()));
                             }
+
+
                         }
 
                     }
 
                     int pl = Math.round(totalDays/totalCycles);
                     typicalPeriodLength.setText(Integer.toString(pl));
-                    if(dates.size() > 0){
-                        dates.remove( dates.size() - 1 );
-                        dates.remove(0);
-                    }
-
-                    Log.d("REF ARRAY", Integer.toString(dates.size()));
+                    typicalCycleLength.setText(Integer.toString(dates.size()));
                 }
             }
 
