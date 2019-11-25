@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,11 +44,12 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
     private FirebaseUser currentUser;
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth;
-    private TextView typicalCycleLength, typicalPeriodLength;
+    private TextView typicalCycleLength, typicalPeriodLength, monthlyPeriodLength;
     private Button viewStats;
     static final int MAX_YEAR = 2099;
     static final int MIN_YEAR = 1900;
-    private float totalDays, totalCycles;
+    private float totalDays, totalCycles, totalMonthlyDays;
+
     public PeriodStatisticsFragment() {
         // Required empty public constructor
     }
@@ -66,8 +68,10 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         viewStats = view.findViewById(R.id.viewStatsButton);
         viewStats.setOnClickListener(this);
 
+
         typicalCycleLength = view.findViewById(R.id.cycleLength);
         typicalPeriodLength = view.findViewById(R.id.periodLength);
+        monthlyPeriodLength = view.findViewById(R.id.monthly_period);
 
         fm = getFragmentManager();
         fragmentTransaction = fm.beginTransaction();
@@ -85,15 +89,19 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         yearPicker.setMinValue(MIN_YEAR);
         yearPicker.setMaxValue(MAX_YEAR);
         yearPicker.setOnValueChangedListener(this);
-        yearPicker.setValue(Integer.parseInt(yearFormat.format(date)));
+        selectedYear = Integer.parseInt(yearFormat.format(date));
+        yearPicker.setValue(selectedYear);
 
         monthPicker.setMaxValue(12);
         monthPicker.setMinValue(1);
         monthPicker.setOnValueChangedListener(this);
-        monthPicker.setValue(Integer.parseInt(monthFormat.format(date)));
+        selectedMonth = Integer.parseInt(monthFormat.format(date));
+        monthPicker.setValue(selectedMonth);
+
 
         totalDays = 0;
         totalCycles = 0;
+        totalMonthlyDays = 0;
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -108,15 +116,10 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                 int count = (int) ds1.getChildrenCount();
                                 totalDays += count;
                                 totalCycles += 1;
-                                Log.d("REF", ds1.getKey());
                             }
                         }
-                        //DatabaseReference childref = myref.child(ds.getKey());
-
 
                     }
-                    Log.d("REF", Float.toString(totalCycles));
-                    Log.d("REF", Float.toString(totalDays));
                     int pl = Math.round(totalDays/totalCycles);
                     //int pl = int (totalDays/totalCycles + 0.5);
                     typicalPeriodLength.setText(Integer.toString(pl));
@@ -132,8 +135,6 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
 
 
         myref.child("period-tracking").addListenerForSingleValueEvent(valueEventListener);
-
-
 
         return view;
     }
@@ -153,9 +154,37 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
 
     @Override
     public void onClick(View v) {
-        switch(view.getId()){
+        switch (v.getId()) {
             case R.id.viewStatsButton:
+                totalMonthlyDays = 0;
+                ValueEventListener vel = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.exists()){
+
+                        }else {
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                if (ds.getChildrenCount() > 0) {
+                                    totalMonthlyDays += ds.getChildrenCount();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                };
+                Log.d("REF", Integer.toString(selectedMonth));
+                Log.d("REF", Integer.toString(selectedYear));
+                myref.child("period-tracking").child(Integer.toString(selectedYear)).child(Integer.
+                        toString(selectedMonth)).addListenerForSingleValueEvent(vel);
+
+                monthlyPeriodLength.setText(Integer.toString((int)totalMonthlyDays));
                 break;
+
         }
     }
 }

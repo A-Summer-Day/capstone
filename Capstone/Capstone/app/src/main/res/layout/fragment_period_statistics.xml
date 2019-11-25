@@ -72,34 +72,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
+
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/button"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="2">
+                        android:layout_weight="2"
+                     >
 
                         <Button
                             android:id="@+id/viewStatsButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Viee Monthly Stats"
+                            android:clickable="true"
+                            android:enabled="true"
+                            android:focusable="true"
+                            android:onClick="onClick"
+                            android:text="View Monthly Stats"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/stats_display"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="4">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -116,7 +125,7 @@
                                     android:id="@+id/period_range_lable"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="30dp"
+                                    android:layout_marginTop="20dp"
                                     android:text="Period Range"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +135,7 @@
                                     android:id="@+id/period_range"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="30dp"
+                                    android:layout_marginTop="10dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/period_range_lable" />
@@ -142,7 +151,7 @@
                                     android:id="@+id/monthly_period_length"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="30dp"
+                                    android:layout_marginTop="20dp"
                                     android:text="Period Length"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -152,7 +161,7 @@
                                     android:id="@+id/monthly_period"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="30dp"
+                                    android:layout_marginTop="10dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/monthly_period_length" />
@@ -211,6 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:text="Typical Cycle Length"
+                    android:textAlignment="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -239,6 +249,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:text="Typical Period Length"
+                    android:textAlignment="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
