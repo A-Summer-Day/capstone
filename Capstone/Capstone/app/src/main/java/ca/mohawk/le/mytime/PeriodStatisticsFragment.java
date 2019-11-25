@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ import java.util.Date;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PeriodStatisticsFragment extends Fragment implements NumberPicker.OnValueChangeListener {
+public class PeriodStatisticsFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener {
     private View view;
     private TextView cycleLength, periodLength;
     private FragmentManager fm;
@@ -43,6 +44,7 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth;
     private TextView typicalCycleLength, typicalPeriodLength;
+    private Button viewStats;
     static final int MAX_YEAR = 2099;
     static final int MIN_YEAR = 1900;
     private float totalDays, totalCycles;
@@ -60,6 +62,9 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         Date date = new Date();
         DateFormat monthFormat = new SimpleDateFormat("MM");
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
+
+        viewStats = view.findViewById(R.id.viewStatsButton);
+        viewStats.setOnClickListener(this);
 
         typicalCycleLength = view.findViewById(R.id.cycleLength);
         typicalPeriodLength = view.findViewById(R.id.periodLength);
@@ -144,5 +149,13 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                 break;
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(view.getId()){
+            case R.id.viewStatsButton:
+                break;
+        }
     }
 }
