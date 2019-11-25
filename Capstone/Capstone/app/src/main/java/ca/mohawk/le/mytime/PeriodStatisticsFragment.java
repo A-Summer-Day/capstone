@@ -163,6 +163,19 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                     }
                                 });
 
+                                ds1.getRef().orderByKey().limitToFirst(1)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                 ds1.getRef().orderByKey().limitToLast(1)
                                         .addChildEventListener(new ChildEventListener() {
                                             @Override
@@ -202,15 +215,27 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                             }
                                         });
 
+                                ds1.getRef().orderByKey().limitToLast(1)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if(dates.size() > 0){
+                                                    dates.remove(0);
+                                                }
+
+                                                Log.d("REF ARRAY REMOVED", Integer.toString(dates.size()));
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                 totalDays += count;
                                 totalCycles += 1;
-                                
-                                if(dates.size() > 0){
-                                    dates.remove( dates.size() - 1 );
-                                    dates.remove(0);
-                                }
 
-                                Log.d("REF ARRAY REMOVED", Integer.toString(dates.size()));
+
                             }
 
 
