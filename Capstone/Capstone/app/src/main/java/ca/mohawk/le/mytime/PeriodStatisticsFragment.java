@@ -4,6 +4,7 @@ package ca.mohawk.le.mytime;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,11 +42,11 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
     private FragmentTransaction fragmentTransaction;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference().child("users");
-    private String currentUserId;
+    private String currentUserId, first, last;
     private FirebaseUser currentUser;
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth;
-    private TextView typicalCycleLength, typicalPeriodLength, monthlyPeriodLength;
+    private TextView typicalCycleLength, typicalPeriodLength, monthlyPeriodLength, monthlyPeriodRange;
     private Button viewStats;
     static final int MAX_YEAR = 2099;
     static final int MIN_YEAR = 1900;
@@ -72,6 +74,7 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         typicalCycleLength = view.findViewById(R.id.cycleLength);
         typicalPeriodLength = view.findViewById(R.id.periodLength);
         monthlyPeriodLength = view.findViewById(R.id.monthly_period);
+        monthlyPeriodRange = view.findViewById(R.id.period_range);
 
         fm = getFragmentManager();
         fragmentTransaction = fm.beginTransaction();
@@ -161,14 +164,78 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(!dataSnapshot.exists()){
-
+                            monthlyPeriodRange.setText("N/A");
+                            monthlyPeriodLength.setText("N/A");
                         }else {
+                            if(dataSnapshot.getChildrenCount() > 0){
+                                last = "";
+                                first = "";
+                                myref.child("period-tracking").child(Integer.toString(selectedYear))
+                                        .child(Integer.toString(selectedMonth)).orderByKey().limitToFirst(1)
+                                        .addChildEventListener(new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                first = selectedMonth + "/" + dataSnapshot.getKey() + "/" + selectedYear;
+                                                Log.d("REF FIRST", first);
+                                            }
 
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                if (ds.getChildrenCount() > 0) {
-                                    totalMonthlyDays += ds.getChildrenCount();
-                                }
+                                            @Override
+                                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+                                myref.child("period-tracking").child(Integer.toString(selectedYear))
+                                        .child(Integer.toString(selectedMonth)).limitToLast(1)
+                                        .addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        last = selectedMonth + "/" + dataSnapshot.getKey() + "/" + selectedYear;
+                                        Log.d("REF LAST", last);
+                                        monthlyPeriodRange.setText(first + " - " + last);
+                                    }
+
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                totalMonthlyDays += dataSnapshot.getChildrenCount();
+                                monthlyPeriodLength.setText(Integer.toString((int)totalMonthlyDays));
                             }
+
                         }
                     }
 
@@ -177,12 +244,9 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
 
                     }
                 };
-                Log.d("REF", Integer.toString(selectedMonth));
-                Log.d("REF", Integer.toString(selectedYear));
                 myref.child("period-tracking").child(Integer.toString(selectedYear)).child(Integer.
                         toString(selectedMonth)).addListenerForSingleValueEvent(vel);
 
-                monthlyPeriodLength.setText(Integer.toString((int)totalMonthlyDays));
                 break;
 
         }
