@@ -40,7 +40,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener {
         temperatureStatistics = view.findViewById(R.id.temperatureStatistics);
         periodStatistics = view.findViewById(R.id.periodStatistics);
 
-        moodStatistics.setOnClickListener(this);
+        periodStatistics.setOnClickListener(this);
         sexualActivityStatistics.setOnClickListener(this);
         temperatureStatistics.setOnClickListener(this);
         moodStatistics.setOnClickListener(this);
@@ -52,12 +52,24 @@ public class ReportsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.periodStatistics:
+                PeriodStatisticsFragment periodStatisticsFragment = new PeriodStatisticsFragment();
+                fragmentTransaction.replace(R.id.generalLayout, periodStatisticsFragment);
+                fragmentTransaction.commit();
                 break;
             case R.id.sexualActivityStatistics:
+                SexualActivityStatisticsFragment sexualActivityStatisticsFragment = new SexualActivityStatisticsFragment();
+                fragmentTransaction.replace(R.id.generalLayout, sexualActivityStatisticsFragment);
+                fragmentTransaction.commit();
                 break;
             case R.id.moodsStatistics:
+                MoodStatisticsFragment moodStatisticsFragment = new MoodStatisticsFragment();
+                fragmentTransaction.replace(R.id.generalLayout, moodStatisticsFragment);
+                fragmentTransaction.commit();
                 break;
             case R.id.temperatureStatistics:
+                TemperatureStatisticsFragment temperatureStatisticsFragment = new TemperatureStatisticsFragment();
+                fragmentTransaction.replace(R.id.generalLayout, temperatureStatisticsFragment);
+                fragmentTransaction.commit();
                 break;
         }
     }
