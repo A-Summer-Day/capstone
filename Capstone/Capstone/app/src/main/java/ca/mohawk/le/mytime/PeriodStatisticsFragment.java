@@ -28,8 +28,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -51,6 +54,7 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
     static final int MAX_YEAR = 2099;
     static final int MIN_YEAR = 1900;
     private float totalDays, totalCycles, totalMonthlyDays;
+    private List<Date> dates;
 
     public PeriodStatisticsFragment() {
         // Required empty public constructor
@@ -67,9 +71,11 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         DateFormat monthFormat = new SimpleDateFormat("MM");
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
 
+
         viewStats = view.findViewById(R.id.viewStatsButton);
         viewStats.setOnClickListener(this);
 
+        dates = new ArrayList<>();
 
         typicalCycleLength = view.findViewById(R.id.cycleLength);
         typicalPeriodLength = view.findViewById(R.id.periodLength);
@@ -110,22 +116,105 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-
+                    typicalCycleLength.setText("N/A");
+                    typicalPeriodLength.setText("N/A");
                 }else {
 
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    for (final DataSnapshot ds : dataSnapshot.getChildren()) {
                         if(ds.getChildrenCount() > 0){
-                            for (DataSnapshot ds1 : ds.getChildren()){
+                            for (final DataSnapshot ds1 : ds.getChildren()){
                                 int count = (int) ds1.getChildrenCount();
+                                ds1.getRef().orderByKey().limitToFirst(1)
+                                        .addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        Log.d("REF FIRST CHILD", dataSnapshot.getKey());
+                                        DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
+                                        String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
+                                        try{
+                                            Date d = fullFormat.parse(dateString);
+                                            dates.add(d);
+                                        }catch(ParseException e){
+                                            e.printStackTrace();
+                                        }
+
+                                        Log.d("REF FULL FIRST", dateString);
+                                    }
+
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                ds1.getRef().orderByKey().limitToLast(1)
+                                        .addChildEventListener(new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                Log.d("REF LAST CHILD", dataSnapshot.getKey());
+                                                DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
+                                                String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
+                                                try{
+                                                    Date d = fullFormat.parse(dateString);
+                                                    dates.add(d);
+                                                }catch(ParseException e){
+                                                    e.printStackTrace();
+                                                }
+
+                                                Log.d("REF FULL LAST", dateString);
+                                            }
+
+                                            @Override
+                                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                 totalDays += count;
                                 totalCycles += 1;
                             }
                         }
 
                     }
+
                     int pl = Math.round(totalDays/totalCycles);
-                    //int pl = int (totalDays/totalCycles + 0.5);
                     typicalPeriodLength.setText(Integer.toString(pl));
+                    if(dates.size() > 0){
+                        dates.remove( dates.size() - 1 );
+                        dates.remove(0);
+                    }
+
+                    Log.d("REF ARRAY", Integer.toString(dates.size()));
                 }
             }
 
