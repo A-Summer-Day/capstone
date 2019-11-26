@@ -37,17 +37,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
 
-    FirebaseDatabase database;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        if(database ==  null){
-            database = FirebaseDatabase.getInstance();
-            database.setPersistenceEnabled(true);
-        }
+
 
         myref  = database.getReference().child("users");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {

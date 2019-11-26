@@ -38,7 +38,7 @@ tools:context=".SexualActivityTrackingFragment">
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logTemperature"
+        app:layout_constraintTop_toBottomOf="@+id/logSexualActivity"
         tools:layout_editor_absoluteX="16dp">
 
         <EditText
@@ -52,7 +52,7 @@ tools:context=".SexualActivityTrackingFragment">
             android:textAlignment="textStart"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/temperature_label"
+            app:layout_constraintStart_toEndOf="@+id/with_whom_label"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -63,7 +63,7 @@ tools:context=".SexualActivityTrackingFragment">
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:onClick="onClick"
-            app:layout_constraintStart_toEndOf="@+id/protection_label"
+            app:layout_constraintStart_toEndOf="@+id/with_protection_label"
             app:layout_constraintTop_toBottomOf="@+id/with_whom" />
 
         <CheckBox
@@ -89,7 +89,7 @@ tools:context=".SexualActivityTrackingFragment">
 
 
         <TextView
-            android:id="@+id/temperature_label"
+            android:id="@+id/with_whom_label"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -100,14 +100,14 @@ tools:context=".SexualActivityTrackingFragment">
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/protection_label"
+            android:id="@+id/with_protection_label"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
             android:text="Protection?"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/temperature_label" />
+            app:layout_constraintTop_toBottomOf="@+id/with_whom_label" />
 
         <TextView
             android:id="@+id/on_period_label"
@@ -117,14 +117,14 @@ tools:context=".SexualActivityTrackingFragment">
             android:layout_marginTop="30dp"
             android:text="On Period?"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/protection_label" />
+            app:layout_constraintTop_toBottomOf="@+id/with_protection_label" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <CheckBox
-        android:id="@+id/logTemperature"
+        android:id="@+id/logSexualActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

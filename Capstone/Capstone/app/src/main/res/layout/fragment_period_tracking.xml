@@ -39,11 +39,11 @@
             android:layout_height="0dp"
             android:layout_marginTop="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logTemperature"
+            app:layout_constraintTop_toBottomOf="@+id/logPeriod"
             tools:layout_editor_absoluteX="16dp">
 
             <EditText
-                android:id="@+id/with_whom"
+                android:id="@+id/symptoms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -53,11 +53,11 @@
                 android:textAlignment="textStart"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/temperature_label"
+                app:layout_constraintStart_toEndOf="@+id/symptoms_label"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/moods_spinner"
+                android:id="@+id/moods"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -66,8 +66,8 @@
                 android:inputType="textPersonName"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/protection_label"
-                app:layout_constraintTop_toBottomOf="@+id/with_whom" />
+                app:layout_constraintStart_toEndOf="@+id/moods_label"
+                app:layout_constraintTop_toBottomOf="@+id/symptoms" />
 
             <EditText
                 android:id="@+id/weight"
@@ -79,8 +79,8 @@
                 android:inputType="textPersonName"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/on_period_label"
-                app:layout_constraintTop_toBottomOf="@+id/moods_spinner" />
+                app:layout_constraintStart_toEndOf="@+id/weight_label"
+                app:layout_constraintTop_toBottomOf="@+id/moods" />
 
             <ImageButton
                 android:id="@+id/editPeriodDetailsButton"
@@ -95,7 +95,7 @@
 
 
             <TextView
-                android:id="@+id/temperature_label"
+                android:id="@+id/symptoms_label"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -106,38 +106,37 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/protection_label"
+                android:id="@+id/moods_label"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="Moods:"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/temperature_label" />
+                app:layout_constraintTop_toBottomOf="@+id/symptoms_label" />
 
             <TextView
-                android:id="@+id/on_period_label"
+                android:id="@+id/weight_label"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="30dp"
                 android:text="Weight:"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/protection_label" />
+                app:layout_constraintTop_toBottomOf="@+id/moods_label" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
         <CheckBox
-            android:id="@+id/logTemperature"
+            android:id="@+id/logPeriod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:text="Log Period?"
             android:onClick="onClick"
+            android:text="Log Period?"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -17,12 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -30,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
@@ -151,105 +145,6 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                 dates.add(temp.get(0));
                                 dates.add(temp.get(temp.size() - 1));
 
-                                /*
-                                ds1.getRef().orderByKey().limitToFirst(1)
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                Log.d("REF FIRST CHILD", dataSnapshot.getKey());
-                                                DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
-                                                String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
-                                                try{
-                                                    Date d = fullFormat.parse(dateString);
-                                                    dates.add(d);
-                                                    Log.d("REF ARRAY", Integer.toString(dates.size()));
-                                                }catch(ParseException e){
-                                                    e.printStackTrace();
-                                                }
-
-                                                Log.d("REF FULL FIRST", dateString);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                ds1.getRef().orderByKey().limitToLast(1)
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                Log.d("REF LAST CHILD", dataSnapshot.getKey());
-                                                DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
-                                                String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
-                                                try{
-                                                    Date d = fullFormat.parse(dateString);
-                                                    dates.add(d);
-                                                    Log.d("REF ARRAY", Integer.toString(dates.size()));
-                                                }catch(ParseException e){
-                                                    e.printStackTrace();
-                                                }
-
-                                                Log.d("REF FULL LAST", dateString);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-*/
-/*
-                                readData(ds1.getRef().orderByKey().limitToFirst(1).getRef(), new OnGetDataListener() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
-                                        String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
-                                        try{
-                                            Date d = fullFormat.parse(dateString);
-                                            dates.add(d);
-                                            Log.d("REF FIRST ARRAY", Integer.toString(dates.size()));
-                                        }catch(ParseException e){
-                                            e.printStackTrace();
-                                        }
-                                        readData(ds1.getRef().orderByKey().limitToLast(1).getRef(), new OnGetDataListener() {
-                                            @Override
-                                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                                DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
-                                                String dateString = ds1.getKey() + "/" + dataSnapshot.getKey() + "/" + ds.getKey();
-                                                try{
-                                                    Date d = fullFormat.parse(dateString);
-                                                    dates.add(d);
-                                                    Log.d("REF LAST ARRAY", Integer.toString(dates.size()));
-                                                }catch(ParseException e){
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onStart() {
-
-                                            }
-
-                                            @Override
-                                            public void onFailure() {
-
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onStart() {
-
-                                    }
-
-                                    @Override
-                                    public void onFailure() {
-
-                                    }
-                                });*/
-                                //Log.d("REF FINAL ARRAY", Integer.toString(dates.size()));
 
                                 totalDays += count;
                                 totalCycles += 1;
@@ -259,15 +154,10 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
 
                     int pl = Math.round(totalDays/totalCycles);
                     typicalPeriodLength.setText(Integer.toString(pl));
-
                     Collections.sort(dates);
-
-                    Log.d("REF ARRAY", dates.toString());
                     int days = getLength(dates);
-                    int periodLength =  (int)Math.ceil(days/(totalCycles-1));
-                    Log.d("REF CYCLES", Integer.toString(totalCycles));
-                    Log.d("REF DAYS", Integer.toString(days));
-                    typicalCycleLength.setText(Integer.toString(periodLength));
+                    double periodLength =  (double)days/(totalCycles-1);
+                    typicalCycleLength.setText(Integer.toString((int) Math.round(periodLength)));
                 }
             }
 
@@ -318,7 +208,6 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                             @Override
                                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                                 first = selectedMonth + "/" + dataSnapshot.getKey() + "/" + selectedYear;
-                                                Log.d("REF FIRST", first);
                                             }
 
                                             @Override
@@ -349,7 +238,6 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
                                     @Override
                                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                         last = selectedMonth + "/" + dataSnapshot.getKey() + "/" + selectedYear;
-                                        Log.d("REF LAST", last);
                                         monthlyPeriodRange.setText(first + " - " + last);
                                     }
 
@@ -394,38 +282,19 @@ public class PeriodStatisticsFragment extends Fragment implements NumberPicker.O
         }
     }
 
-    public void readData(DatabaseReference reference, final OnGetDataListener listener){
-        listener.onStart();
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listener.onSuccess(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                listener.onFailure();
-            }
-        });
-
-    }
 
     public int getLength(List<Date> dates){
         int length = 0;
         dates.remove(0);
         dates.remove(dates.size() - 1);
-        Log.d("REF SIZE", Integer.toString(dates.size()));
         for(int i = 0; i< dates.size(); i += 2){
             dates.get(i);
             dates.get(i+1);
             int difference = (int)(dates.get(i).getTime() - dates.get(i+1).getTime());
             int days = (int)(difference / (1000 * 60 * 60 * 24));
-            Log.d("REF DAY1", dates.get(i).toString());
-            Log.d("REF DAY2", dates.get(i+1).toString());
-            Log.d("REF DAYS DIFF", Integer.toString(days));
             length += days;
         }
-
+        Log.d("REF CHECK", Integer.toString(length));
         return length;
     }
 

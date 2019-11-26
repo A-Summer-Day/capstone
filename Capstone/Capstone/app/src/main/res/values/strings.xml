@@ -20,8 +20,8 @@
 
 
     <string-array name="moods_array">
-        <item>Happy</item>
         <item>Neutral</item>
+        <item>Happy</item>
         <item>Sad</item>
     </string-array>
 

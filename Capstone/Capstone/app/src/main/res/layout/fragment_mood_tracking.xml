@@ -51,7 +51,7 @@
                 android:contentDescription="Save and Edit Button"
                 android:src="@android:drawable/ic_menu_edit"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/moods_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/moods" />
 
 
             <TextView
@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/moods_spinner"
+                android:id="@+id/moods"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"

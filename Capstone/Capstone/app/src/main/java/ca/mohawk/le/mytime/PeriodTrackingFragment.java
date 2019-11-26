@@ -41,7 +41,6 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     DatabaseReference myref = database.getReference().child("users");
     private View view;
     private CalendarView calendar;
-    //private MaterialCalendarView calendar;
     private CheckBox logPeriod;
     private AppCompatImageButton editPeriodDetailsButton;
     private EditText getSymptoms, getMoods, getWeight;
@@ -65,16 +64,15 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_period_tracking, container, false);
         calendar = view.findViewById(R.id.calendar);
-        logPeriod = view.findViewById(R.id.logTemperature);
+        logPeriod = view.findViewById(R.id.logPeriod);
 
         calendar.setOnDateChangeListener(this);
-        //calendar.getSelectedDate();
         editPeriodDetailsButton = view.findViewById(R.id.editPeriodDetailsButton);
         logPeriod.setOnClickListener(this);
         editPeriodDetailsButton.setOnClickListener(this);
 
-        getSymptoms = view.findViewById(R.id.with_whom);
-        getMoods = view.findViewById(R.id.moods_spinner);
+        getSymptoms = view.findViewById(R.id.symptoms);
+        getMoods = view.findViewById(R.id.moods);
         getWeight = view.findViewById(R.id.weight);
 
         getSymptoms.setEnabled(false);
@@ -126,13 +124,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
         myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
-        /*checked = logPeriod.isChecked();
-        if(checked){
-            Toast.makeText(getActivity(), "Checked", Toast.LENGTH_SHORT).show();
-            editInfo.setVisibility(View.VISIBLE);
-        }else{
-            editInfo.setVisibility(View.GONE);
-        }*/
+
         updating = true;
         return view;
     }
@@ -140,8 +132,6 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
     @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-
-        //Toast.makeText(getActivity(), String.valueOf(dayOfMonth), Toast.LENGTH_SHORT).show();
 
         selectedYear = Integer.toString(year);
         selectedMonth = Integer.toString(month + 1);
@@ -190,7 +180,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             case R.id.editPeriodDetailsButton:
                 updating = updateInfo(updating);
                 break;
-            case R.id.logTemperature:
+            case R.id.logPeriod:
                 if(checked){
                     myref.child("period-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/logged").setValue("True");
@@ -213,8 +203,8 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     }
 
     private boolean updateInfo(boolean updating){
-        getSymptoms = view.findViewById(R.id.with_whom);
-        getMoods = view.findViewById(R.id.moods_spinner);
+        getSymptoms = view.findViewById(R.id.symptoms);
+        getMoods = view.findViewById(R.id.moods);
         getWeight = view.findViewById(R.id.weight);
 
         if(updating){
@@ -238,10 +228,6 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
                     child(selectedDayOfMonth).child("moods").setValue(moods);
             myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                     child(selectedDayOfMonth).child("weight").setValue(weight);
-
-            getSymptoms.setText(symptoms);
-            getMoods.setText(moods);
-            getWeight.setText(weight);
 
             editPeriodDetailsButton.setImageResource(android.R.drawable.ic_menu_edit);
             return true;
