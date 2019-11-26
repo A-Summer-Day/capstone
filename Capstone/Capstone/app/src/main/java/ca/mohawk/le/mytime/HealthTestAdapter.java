@@ -25,11 +25,12 @@ public class HealthTestAdapter extends ArrayAdapter<HealthTest> {
 
         TextView name = convertView.findViewById(R.id.healthtest_name);
         TextView frequency = convertView.findViewById(R.id.healthtest_frequency);
+        TextView lastTestDate = convertView.findViewById(R.id.healthtest_last_testdate);
 
 
         name.setText(healthTest.name);
-        frequency.setText(healthTest.frequency + " " + healthTest.unit);
-
+        frequency.setText("Every " + healthTest.frequency + " " + healthTest.unit);
+        lastTestDate.setText("Last test date: " + healthTest.lastTestDate);
         return convertView;
     }
 }

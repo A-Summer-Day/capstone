@@ -38,7 +38,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logAPeriod"
+            app:layout_constraintTop_toBottomOf="@+id/logTemperature"
             tools:layout_editor_absoluteX="16dp">
 
 
@@ -55,7 +55,7 @@
 
 
             <TextView
-                android:id="@+id/with_whom_label"
+                android:id="@+id/temperature_label"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -76,7 +76,7 @@
                 android:textAlignment="textStart"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/with_whom_label"
+                app:layout_constraintStart_toEndOf="@+id/temperature_label"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -84,7 +84,7 @@
 
 
         <CheckBox
-            android:id="@+id/logAPeriod"
+            android:id="@+id/logTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

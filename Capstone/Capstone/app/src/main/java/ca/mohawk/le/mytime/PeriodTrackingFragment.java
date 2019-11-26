@@ -203,10 +203,6 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     }
 
     private boolean updateInfo(boolean updating){
-        getSymptoms = view.findViewById(R.id.symptoms);
-        getMoods = view.findViewById(R.id.moods);
-        getWeight = view.findViewById(R.id.weight);
-
         if(updating){
             getSymptoms.setEnabled(true);
             getMoods.setEnabled(true);

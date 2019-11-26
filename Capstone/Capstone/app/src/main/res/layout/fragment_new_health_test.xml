@@ -26,11 +26,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="39dp"
         android:text="Test"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/test_frequency_label"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_healthtest_label" />
 
     <EditText
         android:id="@+id/test_name"
@@ -50,53 +52,87 @@
         android:layout_height="wrap_content"
 
         android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="30dp"
         android:text="Add"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_frequency_label" />
+        app:layout_constraintTop_toBottomOf="@+id/test_last_testdate" />
 
     <Button
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="43dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp"
         android:text="Cancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_frequency" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_button" />
 
     <EditText
         android:id="@+id/test_frequency"
-        android:layout_width="0dp"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="131dp"
+        android:layout_marginStart="118dp"
+        android:layout_marginEnd="117dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/test_frequency_label"
-        app:layout_constraintTop_toBottomOf="@+id/test_name" />
+        app:layout_constraintBottom_toTopOf="@+id/test_last_testdate"
+        app:layout_constraintEnd_toEndOf="@+id/test_last_testdate"
+        app:layout_constraintStart_toEndOf="@+id/test_name_label" />
 
     <TextView
         android:id="@+id/test_frequency_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="54dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="38dp"
         android:text="Frequency"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/test_frequency"
-        app:layout_constraintEnd_toStartOf="@+id/test_frequency"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/test_last_testdate_label"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/frequency_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="43dp"
         android:layout_marginTop="31dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="46dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/test_frequency"
         app:layout_constraintTop_toBottomOf="@+id/test_name" />
+
+    <TextView
+        android:id="@+id/test_last_testdate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Last Test Date"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/test_last_testdate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/test_last_testdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frequency_spinner" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:text="Delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/test_last_testdate" />
 </androidx.constraintlayout.widget.ConstraintLayout>

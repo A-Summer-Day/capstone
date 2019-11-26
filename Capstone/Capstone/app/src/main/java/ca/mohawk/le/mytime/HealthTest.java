@@ -4,10 +4,12 @@ public class HealthTest {
     String name;
     String frequency;
     String unit;
+    String lastTestDate;
 
-    public HealthTest(String name, String frequency, String unit) {
+    public HealthTest(String name, String frequency, String unit, String lastTestDate) {
         this.name = name;
         this.frequency = frequency;
         this.unit = unit;
+        this.lastTestDate = lastTestDate;
     }
 }

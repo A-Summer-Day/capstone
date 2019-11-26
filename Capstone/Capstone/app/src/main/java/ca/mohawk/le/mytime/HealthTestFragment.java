@@ -87,7 +87,8 @@ public class HealthTestFragment extends Fragment implements View.OnClickListener
                         String name = ds.getKey();
                         String frequency = ds.child("frequency").getValue().toString();
                         String unit = ds.child("unit").getValue().toString();
-                        HealthTest healthTest = new HealthTest(name,frequency,unit);
+                        String lastTestDate = ds.child("last-testdate").getValue().toString();
+                        HealthTest healthTest = new HealthTest(name,frequency,unit,lastTestDate);
                         healthTests.add(healthTest);
                     }
                     listView.setAdapter(adapter);
@@ -121,6 +122,15 @@ public class HealthTestFragment extends Fragment implements View.OnClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         HealthTest healthTest = (HealthTest) parent.getAdapter().getItem(position);
-        //Toast.makeText(getActivity(), healthTest.name, Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("test-name", healthTest.name);
+        bundle.putString("test-frequency", healthTest.frequency);
+        bundle.putString("test-unit", healthTest.unit);
+        bundle.putString("test-last-testdate", healthTest.lastTestDate);
+        HealthTestFragment newHealthTestFragment = new HealthTestFragment();
+        newHealthTestFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.generalLayout, newHealthTestFragment);
+        fragmentTransaction.commit();
+        Toast.makeText(getActivity(), healthTest.name, Toast.LENGTH_SHORT).show();
     }
 }

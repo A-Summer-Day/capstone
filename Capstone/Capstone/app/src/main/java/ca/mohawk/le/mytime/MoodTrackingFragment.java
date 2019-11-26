@@ -74,6 +74,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
         spinner.setAdapter(adapter);
         spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(this);
+        spinner.setEnabled(false);
 
         calendar = view.findViewById(R.id.calendar);
         logMood = view.findViewById(R.id.logMood);
@@ -153,7 +154,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
             case R.id.logMood:
                 if(checked){
                     myref.child("mood/" + selectedYear + "/" + selectedMonth + "/" +
-                            selectedDayOfMonth + "/logged").setValue("Neutral");
+                            selectedDayOfMonth + "/mood").setValue("Neutral");
                     editInfo.setVisibility(View.VISIBLE);
                 }else{
                     myref.child("mood/" + selectedYear + "/" + selectedMonth + "/" +
@@ -193,7 +194,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-
+                    spinner.setSelection(adapter.getPosition(0));
                 }else{
                     logMood.setChecked(true);
                     editInfo.setVisibility(View.VISIBLE);
