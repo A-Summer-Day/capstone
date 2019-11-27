@@ -149,6 +149,8 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
 
         logTemperature.setChecked(false);
         editInfo.setVisibility(View.GONE);
+        temperature = Integer.toString(37);
+        getTemperature.setText(temperature);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override

@@ -204,6 +204,7 @@ public class SexualActivityTrackingFragment extends Fragment implements View.OnC
         selectedDayOfMonth = Integer.toString(dayOfMonth);
 
         logActivity.setChecked(false);
+        getPartner.setText("");
         onProtection.setChecked(false);
         onPeriod.setChecked(false);
         editInfo.setVisibility(View.GONE);

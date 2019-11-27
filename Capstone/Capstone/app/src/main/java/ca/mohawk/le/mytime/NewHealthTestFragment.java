@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,8 +25,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -42,6 +46,7 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
     private EditText getName, getFrequency, getLastTestDate;
     private int year,month,day;
     private Spinner spinner;
+    private Button add_button, cancel_button, delete_button;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myref = database.getReference().child("users");
     private String currentUserId;
@@ -61,9 +66,9 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_new_health_test, container, false);
 
-        Button add_button = view.findViewById(R.id.add_new_button);
-        Button cancel_button = view.findViewById(R.id.cancel_button);
-        Button delete_button = view.findViewById(R.id.delete_button);
+        add_button = view.findViewById(R.id.add_new_button);
+        cancel_button = view.findViewById(R.id.cancel_button);
+        delete_button = view.findViewById(R.id.delete_button);
         add_button.setOnClickListener(this);
         cancel_button.setOnClickListener(this);
         delete_button.setOnClickListener(this);
@@ -90,6 +95,11 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey("test-name")){
             getName.setText(bundle.getString("test-name"));
+            getFrequency.setText(bundle.getString("test-frequency"));
+            getLastTestDate.setText(bundle.getString("test-last-testdate").replace("-", "/"));
+            getName.setEnabled(false);
+            spinner.setSelection(adapter.getPosition(bundle.getString("test-unit")));
+            add_button.setText("Save");
         }
 
         fm = getFragmentManager();
@@ -107,12 +117,19 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
                 fragmentTransaction.commit();
                 break;
             case R.id.delete_button:
+                String testToDelete = getName.getText().toString();
+                myref.child("healthtests").child(testToDelete).removeValue();
+                healthTestFragment = new HealthTestFragment();
+                fragmentTransaction.replace(R.id.generalLayout, healthTestFragment);
+                fragmentTransaction.commit();
                 break;
             case R.id.add_new_button:
                 name = getName.getText().toString();
                 frequency = String.valueOf(getFrequency.getText().toString());
 
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(frequency)){
+
+
                     if(TextUtils.isEmpty(selectedDay)
                             || TextUtils.isEmpty(selectedMonth) || TextUtils.isEmpty(selectedYear)){
                         myref.child("healthtests").child(name).child("last-testdate").setValue("N/A");
@@ -128,7 +145,8 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
 
                     getName.setText("");
                     getFrequency.setText("");
-
+                    getLastTestDate.setText("");
+                    spinner.setSelection(0);
                     healthTestFragment = new HealthTestFragment();
                     fragmentTransaction.replace(R.id.generalLayout, healthTestFragment);
                     fragmentTransaction.commit();

@@ -153,11 +153,11 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
                 break;
             case R.id.logMood:
                 if(checked){
-                    myref.child("mood/" + selectedYear + "/" + selectedMonth + "/" +
+                    myref.child("mood-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/mood").setValue("Neutral");
                     editInfo.setVisibility(View.VISIBLE);
                 }else{
-                    myref.child("mood/" + selectedYear + "/" + selectedMonth + "/" +
+                    myref.child("mood-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth).removeValue();
                     editInfo.setVisibility(View.GONE);
                 }
@@ -194,7 +194,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
-                    spinner.setSelection(adapter.getPosition(0));
+                    spinner.setSelection(0,false);
                 }else{
                     logMood.setChecked(true);
                     editInfo.setVisibility(View.VISIBLE);

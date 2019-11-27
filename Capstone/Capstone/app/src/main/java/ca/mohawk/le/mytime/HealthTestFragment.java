@@ -127,10 +127,10 @@ public class HealthTestFragment extends Fragment implements View.OnClickListener
         bundle.putString("test-frequency", healthTest.frequency);
         bundle.putString("test-unit", healthTest.unit);
         bundle.putString("test-last-testdate", healthTest.lastTestDate);
-        HealthTestFragment newHealthTestFragment = new HealthTestFragment();
+        NewHealthTestFragment newHealthTestFragment = new NewHealthTestFragment();
         newHealthTestFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.generalLayout, newHealthTestFragment);
         fragmentTransaction.commit();
-        Toast.makeText(getActivity(), healthTest.name, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), healthTest.name, Toast.LENGTH_SHORT).show();
     }
 }
