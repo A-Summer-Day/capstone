@@ -42,7 +42,8 @@ import java.util.concurrent.Executor;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PeriodStatisticsFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener {
+public class PeriodStatisticsFragment extends Fragment implements
+        NumberPicker.OnValueChangeListener, View.OnClickListener {
     private View view;
     private TextView cycleLength, periodLength;
     private FragmentManager fm;

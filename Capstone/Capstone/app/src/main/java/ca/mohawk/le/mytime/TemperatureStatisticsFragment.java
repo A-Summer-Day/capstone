@@ -60,7 +60,6 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
     LineData lineData;
     LineDataSet lineDataSet;
     ArrayList <Entry> lineEntries;
-    ArrayList LineEntryLabels;
     Legend legend;
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
@@ -73,7 +72,6 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
     private Button viewStats;
     static final int MAX_YEAR = 2099;
     static final int MIN_YEAR = 1900;
-    private float totalDays, totalCycles, totalMonthlyDays;
 
     public TemperatureStatisticsFragment() {
         // Required empty public constructor
@@ -141,13 +139,11 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
                                 lineEntries.add(new Entry(i+1,37));
                             }
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                Log.d("REf COUNT", Long.toString(dataSnapshot.getChildrenCount()));
                                 if(dataSnapshot.getChildrenCount()>0){
                                     float temp = Float.parseFloat(ds.child("temperature").getValue().toString());
                                     int m = Integer.parseInt(ds.getKey());
                                     lineEntries.set(m-1, new Entry(m,temp));
                                 }
-                                Log.d("REF ENTRIES", lineEntries.toString());
                                 lineDataSet = new LineDataSet(lineEntries, "Temperature");
                                 lineDataSet.setColors(Color.parseColor("#F08080"));
                                 lineDataSet.setValueTextColor(Color.BLACK);
