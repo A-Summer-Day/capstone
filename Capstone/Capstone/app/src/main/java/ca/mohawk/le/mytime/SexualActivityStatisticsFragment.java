@@ -137,7 +137,7 @@ public class SexualActivityStatisticsFragment extends Fragment implements
                             }
                         }
                     }
-                    Log.d("REF LIST", listOfPartners.toString());
+
                     yearlyPartnerCount.setText(Integer.toString(totalPartners));
                     yearlyEncounterCount.setText(Integer.toString(totalEncounters));
 
@@ -184,8 +184,8 @@ public class SexualActivityStatisticsFragment extends Fragment implements
                                         }
                                     }
 
-                                    monthlyPartnerCount.setText(totalMonthlyPartners);
-                                    monthlyEncounterCount.setText(totalMonthlyEnCounters);
+                                    monthlyPartnerCount.setText(Integer.toString(totalMonthlyPartners));
+                                    monthlyEncounterCount.setText(Integer.toString(totalMonthlyEnCounters));
 
                                 }
                             }
@@ -235,7 +235,7 @@ public class SexualActivityStatisticsFragment extends Fragment implements
                                     }
                                 }
                             }
-                            Log.d("REF LIST", listOfPartners.toString());
+
                             yearlyPartnerCount.setText(Integer.toString(totalPartners));
                             yearlyEncounterCount.setText(Integer.toString(totalEncounters));
 
