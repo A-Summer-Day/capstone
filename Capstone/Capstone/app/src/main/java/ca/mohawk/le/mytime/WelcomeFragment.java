@@ -64,26 +64,31 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.trackPeriodButton:
+                // take user to period tracking page
                 PeriodTrackingFragment periodTrackingFragment = new PeriodTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, periodTrackingFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.trackSexualActivitiesButton:
+                // take user to sexual activity tracking page
                 SexualActivityTrackingFragment sexualActivityTrackingFragment = new SexualActivityTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.trackMoodsButton:
+                // take user to mood tracking page
                 MoodTrackingFragment moodTrackingFragment = new MoodTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, moodTrackingFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.trackTemperatureButton:
+                // take user to temperature tracking page
                 TemperatureTrackingFragment temperatureTrackingFragment = new TemperatureTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, temperatureTrackingFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.profileButton:
+                // take user to profile page
                 ProfileFragment profileFragment = new ProfileFragment();
                 fragmentTransaction.replace(R.id.generalLayout, profileFragment);
                 fragmentTransaction.commit();

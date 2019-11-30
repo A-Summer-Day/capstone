@@ -13,7 +13,8 @@ admin.initializeApp();
 const CUT_OFF_TIME = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds.
 var database = admin.database();
 
-exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(async context => {
+// Function to run at 12:00 AM every day to check and send notifications of upcoming appointments
+exports.scheduledFunction = functions.pubsub.schedule('0 0 * * *').timeZone('America/Toronto').onRun(async context => {
 	var users = await listAllUsers();
 	users.forEach(function(user){
 		var token = '';

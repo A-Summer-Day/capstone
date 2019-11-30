@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FragmentTransaction fragmentTransaction;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref;
+    DatabaseReference myref;  // Database reference
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_home);
 
 
-        myref  = database.getReference().child("users");
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+        myref  = database.getReference().child("users"); // set database reference path to "users"
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(
+                new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (!task.isSuccessful()) {
@@ -58,32 +60,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // Get new Instance ID token
                 token = task.getResult().getToken();
 
-                // Log and toast
-                //String msg = getString(R.string.msg_token_fmt, token);
+                // Get the current user and update token on FireBase database
+                currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                currentUserId = currentUser.getUid();
+                myref.child(currentUserId).child("token").setValue(token);
+
+                // For debug purpose
                 Log.d("GET TOKEN", token);
-                //Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
 
             }
         });
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    myref.child(currentUserId).child("token").setValue(token);
-                    Log.d("GET TOKEN", "TOKEN SET");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        myref.child(currentUserId).child("token").addListenerForSingleValueEvent(valueEventListener);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -121,54 +110,64 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         switch (menuItem.getItemId()) {
             case R.id.nav_profile:
+                // Take user to Profile Page
                 ProfileFragment profilePage = new ProfileFragment();
                 fragmentTransaction.replace(R.id.generalLayout, profilePage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_home:
+                // Take user to Welcome Page
                 WelcomeFragment welcomePage = new WelcomeFragment();
                 fragmentTransaction.replace(R.id.generalLayout, welcomePage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_period_tracking:
+                // Take user to Period Tracking Page
                 PeriodTrackingFragment periodTrackingPage = new PeriodTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, periodTrackingPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_sexual_activity_tracking:
+                // Take user to Sexual Activity Tracking Page
                 SexualActivityTrackingFragment sexualActivityTrackingPage = new SexualActivityTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, sexualActivityTrackingPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_health_tests:
+                // Take user to Health Tests Page
                 HealthTestFragment healthTestPage = new HealthTestFragment();
                 fragmentTransaction.replace(R.id.generalLayout, healthTestPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_mood_tracking:
+                // Take user to Mood Tracking Page
                 MoodTrackingFragment moodTrackingPage = new MoodTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, moodTrackingPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_temperature_tracking:
+                // Take user to Temperature Tracking Page
                 TemperatureTrackingFragment temperatureTrackingPage = new TemperatureTrackingFragment();
                 fragmentTransaction.replace(R.id.generalLayout, temperatureTrackingPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_appointments:
+                // Take user to Appointment Page
                 AppointmentFragment appointmentPage = new AppointmentFragment();
                 fragmentTransaction.replace(R.id.generalLayout, appointmentPage);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_graphs_and_reports:
+                // Take user to Statistics Page
                 ReportsFragment reportsFragment = new ReportsFragment();
                 fragmentTransaction.replace(R.id.generalLayout, reportsFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.nav_logout:
+                // Log user out
                 mAuth.signOut();
                 updateUI(null);
-                //Toast.makeText(this, "CAMERA!", Toast.LENGTH_SHORT).show();
+
                 /**AuthUI.getInstance()
                         .signOut(this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -184,6 +183,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateUI(FirebaseUser currentUser) {
+        // if signed-out, take user back to the Login/Register page
         if(currentUser == null){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

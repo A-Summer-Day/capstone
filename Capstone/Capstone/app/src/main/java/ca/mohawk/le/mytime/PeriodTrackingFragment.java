@@ -38,7 +38,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private View view;
     private CalendarView calendar;
     private CheckBox logPeriod;
@@ -49,7 +49,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     private FirebaseUser currentUser;
     private String selectedYear, selectedMonth, selectedDayOfMonth, selectedDate;
     private SimpleDateFormat sdf;
-    private boolean updating;
+    private boolean updating; // flag to keep track of whether user is allowed to edit or not
     private boolean checked;
     private View editInfo;
 
@@ -81,8 +81,8 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
-        calendar.setMaxDate(new Date().getTime());
+        myref = myref.child(currentUserId); // set database reference path to current user id
+        calendar.setMaxDate(new Date().getTime()); // disable future dates on calendar
 
         Long date = calendar.getDate();
 
@@ -90,21 +90,22 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
         SimpleDateFormat mf = new SimpleDateFormat("MM");
         SimpleDateFormat yf = new SimpleDateFormat("yyyy");
         sdf = new SimpleDateFormat("dd/MM/yyyy");
-        selectedDate = sdf.format(date);
-        selectedDayOfMonth = df.format(date);
-        selectedMonth = mf.format(date);
-        selectedYear = yf.format(date);
+        selectedDate = sdf.format(date); // get current date
+        selectedDayOfMonth = df.format(date); // get current day of month
+        selectedMonth = mf.format(date); // get current month
+        selectedYear = yf.format(date); // get current year
         editInfo = view.findViewById(R.id.addInfo);
-        editInfo.setVisibility(View.GONE);
+        editInfo.setVisibility(View.GONE); // hide edit view
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-                    logPeriod.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
+                }else{ // if data exists
+                    logPeriod.setChecked(true); // check the box
+                    editInfo.setVisibility(View.VISIBLE); // show data details
 
+                    // set the fields accordingly
                     String symptoms = dataSnapshot.child("symptoms").getValue().toString();
                     String moods = dataSnapshot.child("moods").getValue().toString();
                     String weight = dataSnapshot.child("weight").getValue().toString();
@@ -122,6 +123,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             }
         };
 
+        // Check if there is any period data for this user on current date
         myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
 
@@ -133,12 +135,12 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
 
-        selectedYear = Integer.toString(year);
-        selectedMonth = Integer.toString(month + 1);
-        selectedDayOfMonth = Integer.toString(dayOfMonth);
+        selectedYear = Integer.toString(year); // update selected year
+        selectedMonth = Integer.toString(month + 1); // update selected month
+        selectedDayOfMonth = Integer.toString(dayOfMonth); // update selected day of month
 
-        logPeriod.setChecked(false);
-        editInfo.setVisibility(View.GONE);
+        logPeriod.setChecked(false); // uncheck the log box
+        editInfo.setVisibility(View.GONE); // hide details
         Long date = calendar.getDate();
 
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -146,10 +148,11 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-                    logPeriod.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
+                }else{ // if data exists
+                    logPeriod.setChecked(true); // re-check the log box
+                    editInfo.setVisibility(View.VISIBLE); // show details
 
+                    // set fields accordingly
                     String symptoms = dataSnapshot.child("symptoms").getValue().toString();
                     String moods = dataSnapshot.child("moods").getValue().toString();
                     String weight = dataSnapshot.child("weight").getValue().toString();
@@ -168,6 +171,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             }
         };
 
+        // Check if there is any period data for this user at selected year, selected month, and selected day
         myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
 
@@ -178,10 +182,11 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
         checked = logPeriod.isChecked();
         switch (v.getId()){
             case R.id.editPeriodDetailsButton:
-                updating = updateInfo(updating);
+                updating = updateInfo(updating); //update info
                 break;
             case R.id.logPeriod:
                 if(checked){
+                    // if user checks a date, add that date data to cloud
                     myref.child("period-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/logged").setValue("True");
                     myref.child("period-tracking/" + selectedYear + "/" + selectedMonth + "/" +
@@ -193,6 +198,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
 
                     editInfo.setVisibility(View.VISIBLE);
                 }else{
+                    // if user un-checks a date, remove that date data from cloud
                     myref.child("period-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth).removeValue();
                     editInfo.setVisibility(View.GONE);
@@ -203,13 +209,15 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
     }
 
     private boolean updateInfo(boolean updating){
-        if(updating){
+        if(updating){ // editing
+            // enable all fields
             getSymptoms.setEnabled(true);
             getMoods.setEnabled(true);
             getWeight.setEnabled(true);
-            editPeriodDetailsButton.setImageResource(android.R.drawable.ic_menu_save);
+            editPeriodDetailsButton.setImageResource(android.R.drawable.ic_menu_save);  // update the image button
             return false;
-        }else{
+        }else{ // done editing
+            // disable all fields
             getSymptoms.setEnabled(false);
             getMoods.setEnabled(false);
             getWeight.setEnabled(false);
@@ -218,6 +226,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             moods = getMoods.getText().toString();
             weight = getWeight.getText().toString();
 
+            // update database
             myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                     child(selectedDayOfMonth).child("symptoms").setValue(symptoms);
             myref.child("period-tracking").child(selectedYear).child(selectedMonth).
@@ -225,7 +234,7 @@ public class PeriodTrackingFragment extends Fragment implements CalendarView.OnD
             myref.child("period-tracking").child(selectedYear).child(selectedMonth).
                     child(selectedDayOfMonth).child("weight").setValue(weight);
 
-            editPeriodDetailsButton.setImageResource(android.R.drawable.ic_menu_edit);
+            editPeriodDetailsButton.setImageResource(android.R.drawable.ic_menu_edit);  // update the image button
             return true;
         }
     }

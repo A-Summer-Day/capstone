@@ -12,12 +12,13 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 
 import java.io.InputStream;
 
+// Implement this class to be able to use Glider
 @GlideModule
 public class MyAppGlideModule extends AppGlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
-        // Register FirebaseImageLoader to handle StorageReference
+        // Register FireBaseImageLoader to handle StorageReference
         registry.append(StorageReference.class, InputStream.class,
                 new FirebaseImageLoader.Factory());
     }

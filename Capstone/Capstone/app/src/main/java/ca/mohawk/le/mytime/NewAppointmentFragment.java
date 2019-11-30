@@ -40,7 +40,7 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
     private  EditText getName, getAddress, getDoctor, getDate, getTime;
     private int year,month,day,hour,minute;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private String currentUserId;
     private FirebaseUser currentUser;
     private DatePickerDialog datePickerDialog;
@@ -65,7 +65,7 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
+        myref = myref.child(currentUserId); // set database reference path to current user id
 
         getName = view.findViewById(R.id.test_name);
         getAddress = view.findViewById(R.id.test_address);
@@ -86,6 +86,7 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cancel_button:
+                // Discard and take user back to the appointment page
                 AppointmentFragment appointmentFragment = new AppointmentFragment();
                 fragmentTransaction.replace(R.id.generalLayout, appointmentFragment);
                 fragmentTransaction.commit();
@@ -95,7 +96,7 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                 doctor = getDoctor.getText().toString();
                 address = getAddress.getText().toString();
 
-
+                // make sure name, date and time of appointment are not blank
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(selectedYear) &&
                         !TextUtils.isEmpty(selectedMonth) && !TextUtils.isEmpty(selectedDay)
                         && !TextUtils.isEmpty(selectedHour) && !TextUtils.isEmpty(selectedMinute)){
@@ -103,11 +104,13 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                     String date = selectedMonth + "-" + selectedDay + "-" + selectedYear;
                     String time = selectedHour + ":" + selectedMinute;
 
+                    // write to database
                     myref.child("appointments").child(date).child("name").setValue(name);
                     myref.child("appointments").child(date).child("address").setValue(address);
                     myref.child("appointments").child(date).child("doctor").setValue(doctor);
                     myref.child("appointments").child(date).child("time").setValue(time);
 
+                    // reset fields
                     getName.setText("");
                     getAddress.setText("");
                     getDoctor.setText("");
@@ -115,6 +118,8 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                     getTime.setText("");
                     datePickerDialog.updateDate(year,month,day);
                     timePickerDialog.updateTime(hour,minute);
+
+                    // take user back to appointment page
                     appointmentFragment = new AppointmentFragment();
                     fragmentTransaction.replace(R.id.generalLayout, appointmentFragment);
                     fragmentTransaction.commit();
@@ -124,9 +129,11 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
                 }
                 break;
             case R.id.test_date:
+                // open the date picker
                 openDatePickerDialog(v);
                 break;
             case R.id.test_time:
+                // open the time picker
                 openTimePickerDialog(v);
                 break;
         }
@@ -135,41 +142,43 @@ public class NewAppointmentFragment extends Fragment implements View.OnClickList
     private void openTimePickerDialog(View v) {
         hour = c.get(Calendar.HOUR);
         minute = c.get(Calendar.MINUTE);
-        timePickerDialog = new TimePickerDialog(getActivity(),this,hour,minute,true);
+        timePickerDialog = new TimePickerDialog(getActivity(),this,hour,minute,true); // TimePickerDialog instance
+        // if there is selected time, show it next time time picker is opened
         if(!TextUtils.isEmpty(selectedHour) && !TextUtils.isEmpty(selectedMinute)) {
             timePickerDialog.updateTime(Integer.parseInt(selectedHour),
                     Integer.parseInt(selectedMinute));
         }
-        timePickerDialog.show();
+        timePickerDialog.show(); // show time picker
     }
 
     private void openDatePickerDialog(View v) {
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
-        datePickerDialog = new DatePickerDialog(getActivity(),this,year,month,day);
+        datePickerDialog = new DatePickerDialog(getActivity(),this,year,month,day); // DatePickerDialog instance
+        // if there is selected date, show it next time date picker is opened
         if(!TextUtils.isEmpty(selectedYear) && !TextUtils.isEmpty(selectedMonth) && !TextUtils.isEmpty(selectedDay)) {
             datePickerDialog.updateDate(Integer.parseInt(selectedYear),
                     Integer.parseInt(selectedMonth) - 1,Integer.parseInt(selectedDay));
 
         }
-        datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
-        datePickerDialog.show();
+        datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis()); // disable past dates
+        datePickerDialog.show(); // show date picker
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        selectedDay = String.valueOf(dayOfMonth);
-        selectedMonth = String.valueOf(month + 1);
-        selectedYear = String.valueOf(year);
-        getDate.setText(selectedMonth + "/" + selectedDay + "/" + selectedYear);
+        selectedDay = String.valueOf(dayOfMonth); // update selected day of month
+        selectedMonth = String.valueOf(month + 1); // update selected month
+        selectedYear = String.valueOf(year); // update selected year
+        getDate.setText(selectedMonth + "/" + selectedDay + "/" + selectedYear); // display the date
     }
 
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        selectedHour = String.format("%02d", hourOfDay);
-        selectedMinute = String.format("%02d", minute);
-        getTime.setText(selectedHour + ":" + selectedMinute);
+        selectedHour = String.format("%02d", hourOfDay); // update selected hour
+        selectedMinute = String.format("%02d", minute); // update selected minute
+        getTime.setText(selectedHour + ":" + selectedMinute); // display the time
     }
 }

@@ -40,17 +40,17 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private View view;
     private CalendarView calendar;
     private CheckBox logMood;
     private AppCompatImageButton editMoodDetailButton;
-    private String whatMood;
+    private String whatMood; // current mood
     private String currentUserId;
     private FirebaseUser currentUser;
     private String selectedYear, selectedMonth, selectedDayOfMonth, selectedDate;
     private SimpleDateFormat sdf;
-    private boolean updating;
+    private boolean updating; // flag to keep track of whether user is allowed to edit or not
     private boolean checked;
     private ArrayAdapter adapter;
     private View editInfo;
@@ -71,6 +71,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
                 R.array.moods_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        // set up mood spinner
         spinner.setAdapter(adapter);
         spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(this);
@@ -83,10 +84,12 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
         editMoodDetailButton = view.findViewById(R.id.editMoodDetailsButton);
         logMood.setOnClickListener(this);
         editMoodDetailButton.setOnClickListener(this);
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
-        calendar.setMaxDate(new Date().getTime());
+        myref = myref.child(currentUserId); // set database reference path to current user id
+
+        calendar.setMaxDate(new Date().getTime()); // disable future dates on calendar
 
         Long date = calendar.getDate();
 
@@ -94,23 +97,25 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
         SimpleDateFormat mf = new SimpleDateFormat("MM");
         SimpleDateFormat yf = new SimpleDateFormat("yyyy");
         sdf = new SimpleDateFormat("dd/MM/yyyy");
-        selectedDate = sdf.format(date);
-        selectedDayOfMonth = df.format(date);
-        selectedMonth = mf.format(date);
-        selectedYear = yf.format(date);
+        selectedDate = sdf.format(date); // get current date
+        selectedDayOfMonth = df.format(date); // get current day of month
+        selectedMonth = mf.format(date); // get current month
+        selectedYear = yf.format(date); // get current year
+
         editInfo = view.findViewById(R.id.addInfo);
-        editInfo.setVisibility(View.GONE);
+        editInfo.setVisibility(View.GONE); // hide edit view
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-                    logMood.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
+                }else{ // if data exists
+                    logMood.setChecked(true); // check the box
+                    editInfo.setVisibility(View.VISIBLE); // show data details
 
                     String mood = dataSnapshot.child("mood").getValue().toString();
-                    spinner.setSelection(adapter.getPosition(mood));
+                    spinner.setSelection(adapter.getPosition(mood)); // set spinner to mood retrieved from data
 
                 }
             }
@@ -121,6 +126,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
             }
         };
 
+        // Check if there is any mood data for this user on current date
         myref.child("mood-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
 
@@ -133,7 +139,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.moods) {
 
-            whatMood = parent.getItemAtPosition(position).toString();
+            whatMood = parent.getItemAtPosition(position).toString(); // update mood
 
         }
     }
@@ -149,17 +155,19 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
         checked = logMood.isChecked();
         switch (v.getId()){
             case R.id.editMoodDetailsButton:
-                updating = updateInfo(updating);
+                updating = updateInfo(updating); //update info
                 break;
             case R.id.logMood:
                 if(checked){
+                    // if user checks a date, add that date data to cloud
                     myref.child("mood-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/mood").setValue("Neutral");
-                    editInfo.setVisibility(View.VISIBLE);
+                    editInfo.setVisibility(View.VISIBLE); // show the details
                 }else{
+                    // if user un-checks a date, remove that date data from cloud
                     myref.child("mood-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth).removeValue();
-                    editInfo.setVisibility(View.GONE);
+                    editInfo.setVisibility(View.GONE); // hide the details
                 }
                 break;
 
@@ -167,40 +175,41 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
     }
 
     private boolean updateInfo(boolean updating) {
-        if(updating){
-            spinner.setEnabled(true);
-            editMoodDetailButton.setImageResource(android.R.drawable.ic_menu_save);
+        if(updating){ // editing
+            spinner.setEnabled(true); // allow user to choose from spinner
+            editMoodDetailButton.setImageResource(android.R.drawable.ic_menu_save); // update the image button
             return false;
-        }else {
-            spinner.setEnabled(false);
+        }else { // done editing
+            spinner.setEnabled(false); // disable spinner
+            // update database
             myref.child("mood-tracking").child(selectedYear).child(selectedMonth).
                     child(selectedDayOfMonth).child("mood").setValue(whatMood);
 
-            editMoodDetailButton.setImageResource(android.R.drawable.ic_menu_edit);
+            editMoodDetailButton.setImageResource(android.R.drawable.ic_menu_edit); // update the image button
             return true;
         }
     }
 
     @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-        selectedYear = Integer.toString(year);
-        selectedMonth = Integer.toString(month + 1);
-        selectedDayOfMonth = Integer.toString(dayOfMonth);
+        selectedYear = Integer.toString(year); // update selected year
+        selectedMonth = Integer.toString(month + 1); // update selected month
+        selectedDayOfMonth = Integer.toString(dayOfMonth); // update selected day of month
 
-        logMood.setChecked(false);
-        editInfo.setVisibility(View.GONE);
+        logMood.setChecked(false); // uncheck the log box
+        editInfo.setVisibility(View.GONE); // hide details
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
+                if(!dataSnapshot.exists()){ // if there is no data
                     spinner.setSelection(0,false);
-                }else{
-                    logMood.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
+                }else{ // if data exists
+                    logMood.setChecked(true); // re-check the log box
+                    editInfo.setVisibility(View.VISIBLE); // show details
 
                     String mood = dataSnapshot.child("mood").getValue().toString();
-                    spinner.setSelection(adapter.getPosition(mood));
+                    spinner.setSelection(adapter.getPosition(mood)); // set spinner value to mood retrieved
                 }
             }
 
@@ -210,6 +219,7 @@ public class MoodTrackingFragment extends Fragment implements AdapterView.OnItem
             }
         };
 
+        // Check if there is any mood data for this user at selected year and selected month
         myref.child("mood-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
 

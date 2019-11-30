@@ -21,7 +21,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -47,14 +49,14 @@ import java.util.List;
  */
 public class AppointmentFragment extends Fragment implements View.OnClickListener {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
-    private String currentUserId;
+    private String currentUserId,token;
     private FirebaseUser currentUser;
     private SimpleDateFormat sdf;
     private View view;
-    private ArrayList<Appointment> appointments;
+    private ArrayList<Appointment> appointments; // list of appointments
 
     public AppointmentFragment() {
         // Required empty public constructor
@@ -66,12 +68,17 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_appointment, container, false);
+
         fm = getFragmentManager();
         fragmentTransaction = fm.beginTransaction();
+
+        // Get current user
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
-        appointments = new ArrayList<>();
+        myref = myref.child(currentUserId); // set database reference path to current user id
+        appointments = new ArrayList<>(); // initialize an array of appointments
+
+        // Get the custom appointment adapter
         final AppointmentAdapter adapter = new AppointmentAdapter(getActivity().getApplicationContext(),appointments);
 
         final ListView listView = view.findViewById(R.id.appointment_list);
@@ -81,20 +88,24 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
+                }else{ // if data exists
                     for(DataSnapshot ds : dataSnapshot.getChildren()) {
                         String date = ds.getKey().replace("-", "/");
+                        String time = ds.child("time").getValue().toString();
                         try{
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                            Date dateFormatted = sdf.parse(date);
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                            String datetime = date + " " + time;
+                            Date dateFormatted = sdf.parse(datetime);
                             Log.d("BEFORE OR AFTER", (new Date()).toString());
+
+                            // if any appointment in the database is before current datetime, remove it
                             if(new Date().after(dateFormatted)){
                                 ds.getRef().removeValue();
-                            }else{
+                            }else{ // else, add to the appointments array
                                 String name = ds.child("name").getValue().toString();
                                 String address = ds.child("address").getValue().toString();
                                 String doctor = ds.child("doctor").getValue().toString();
-                                String time = ds.child("time").getValue().toString();
+
                                 Appointment appointment = new Appointment(name,doctor,address,date,time);
                                 appointments.add(appointment);
                             }
@@ -102,7 +113,7 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
 
                         }
                     }
-                    listView.setAdapter(adapter);
+                    listView.setAdapter(adapter); // set listview adapter to display the appointments
                 }
             }
 
@@ -112,7 +123,9 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
             }
         };
 
+        // Check if there is any appointment data for this user
         myref.child("appointments").addListenerForSingleValueEvent(valueEventListener);
+
         ImageButton addButton = view.findViewById(R.id.add_button);
         addButton.setOnClickListener(this);
 
@@ -122,7 +135,7 @@ public class AppointmentFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.add_button:
+            case R.id.add_button: // take user to the add new appointment screen
                 NewAppointmentFragment newAppointmentFragment = new NewAppointmentFragment();
                 fragmentTransaction.replace(R.id.generalLayout, newAppointmentFragment);
                 fragmentTransaction.commit();

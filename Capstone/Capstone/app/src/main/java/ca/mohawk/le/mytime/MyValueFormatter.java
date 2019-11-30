@@ -6,6 +6,9 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 
+/**
+ * Formatter for PieChart label
+ */
 public class MyValueFormatter implements IValueFormatter {
 
     private DecimalFormat mFormat;
@@ -16,7 +19,6 @@ public class MyValueFormatter implements IValueFormatter {
 
     @Override
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-        // write your logic here
-        return mFormat.format(value) + "%"; // e.g. append a percentage-sign
+        return mFormat.format(value) + "%"; // append a percentage-sign
     }
 }

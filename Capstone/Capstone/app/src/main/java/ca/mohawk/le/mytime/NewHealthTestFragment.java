@@ -75,31 +75,38 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
 
         spinner = view.findViewById(R.id.frequency_spinner);
 
+        // create an adapter instance for spinner
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.frequency_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        // set spinner adapter
         spinner.setAdapter(adapter);
         spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(this);
-        unit = "days";
+        unit = "days"; // set default value for unit
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
+        myref = myref.child(currentUserId); // set database reference path to current user id
+
+        delete_button.setEnabled(false); // disable delete button
 
         getName = view.findViewById(R.id.test_name);
         getFrequency = view.findViewById(R.id.test_frequency);
         getLastTestDate = view.findViewById(R.id.test_last_testdate);
         getLastTestDate.setOnClickListener(this);
         Bundle bundle = getArguments();
+        // If there is data sent along with the fragment
+        // set the field accordingly
         if(bundle != null && bundle.containsKey("test-name")){
             getName.setText(bundle.getString("test-name"));
             getFrequency.setText(bundle.getString("test-frequency"));
             getLastTestDate.setText(bundle.getString("test-last-testdate").replace("-", "/"));
             getName.setEnabled(false);
             spinner.setSelection(adapter.getPosition(bundle.getString("test-unit")));
-            add_button.setText("Save");
+            add_button.setText("Save"); // change add button text to "Save"
+            delete_button.setEnabled(true); // enable delete button
         }
 
         fm = getFragmentManager();
@@ -112,13 +119,17 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cancel_button:
+                // take user back to health test page
                 HealthTestFragment healthTestFragment = new HealthTestFragment();
                 fragmentTransaction.replace(R.id.generalLayout, healthTestFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.delete_button:
+                // get test name to delete
                 String testToDelete = getName.getText().toString();
+                // remove from database
                 myref.child("healthtests").child(testToDelete).removeValue();
+                // take user back to health test page
                 healthTestFragment = new HealthTestFragment();
                 fragmentTransaction.replace(R.id.generalLayout, healthTestFragment);
                 fragmentTransaction.commit();
@@ -127,26 +138,31 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
                 name = getName.getText().toString();
                 frequency = String.valueOf(getFrequency.getText().toString());
 
+                // make sure name and frequency of healthtest are not blank
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(frequency)){
 
-
+                    // if there is no last test date, write "N/A" to database
                     if(TextUtils.isEmpty(selectedDay)
                             || TextUtils.isEmpty(selectedMonth) || TextUtils.isEmpty(selectedYear)){
                         myref.child("healthtests").child(name).child("last-testdate").setValue("N/A");
-                    }else{
+                    }else{ // else, write the selected date
                         String date = selectedMonth + "-" + selectedDay + "-" + selectedYear;
                         myref.child("healthtests").child(name).child("last-testdate").setValue(date);
                         datePickerDialog.updateDate(year,month,day);
                         getLastTestDate.setText("");
                     }
 
+                    // write to database
                     myref.child("healthtests").child(name).child("frequency").setValue(frequency);
                     myref.child("healthtests").child(name).child("unit").setValue(unit);
 
+                    // reset fields
                     getName.setText("");
                     getFrequency.setText("");
                     getLastTestDate.setText("");
                     spinner.setSelection(0);
+
+                    // take user back to health test page
                     healthTestFragment = new HealthTestFragment();
                     fragmentTransaction.replace(R.id.generalLayout, healthTestFragment);
                     fragmentTransaction.commit();
@@ -156,6 +172,7 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case R.id.test_last_testdate:
+                // open the date picker
                 openDatePickerDialog(v);
                 break;
         }
@@ -165,20 +182,20 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
-        datePickerDialog = new DatePickerDialog(getActivity(),this,year,month,day);
+        datePickerDialog = new DatePickerDialog(getActivity(),this,year,month,day);  // DatePickerDialog instance
+        // if there is selected date, show it next time date picker is opened
         if(!TextUtils.isEmpty(selectedYear) && !TextUtils.isEmpty(selectedMonth) && !TextUtils.isEmpty(selectedDay)) {
             datePickerDialog.updateDate(Integer.parseInt(selectedYear),
                     Integer.parseInt(selectedMonth) - 1,Integer.parseInt(selectedDay));
 
         }
-        //datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
-        datePickerDialog.show();
+        datePickerDialog.show(); // show date picker
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (parent.getId() == R.id.frequency_spinner) {
-            unit = parent.getItemAtPosition(position).toString();
+            unit = parent.getItemAtPosition(position).toString(); // update unit
 
         }
     }
@@ -190,9 +207,9 @@ public class NewHealthTestFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        selectedDay = String.valueOf(dayOfMonth);
-        selectedMonth = String.valueOf(month + 1);
-        selectedYear = String.valueOf(year);
-        getLastTestDate.setText(selectedMonth + "/" + selectedDay + "/" + selectedYear);
+        selectedDay = String.valueOf(dayOfMonth); // update selected day of month
+        selectedMonth = String.valueOf(month + 1); // update selected month
+        selectedYear = String.valueOf(year); // update selected year
+        getLastTestDate.setText(selectedMonth + "/" + selectedDay + "/" + selectedYear); // display the date
     }
 }

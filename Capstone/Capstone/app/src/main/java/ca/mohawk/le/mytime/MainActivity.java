@@ -22,7 +22,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth; // FirebaseAuth instance
     Button registerButton, loginButton;
     String email, password;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance(); // initialize the FirebaseAuth instance
 
         registerButton = findViewById(R.id.registerButton);
         loginButton = findViewById(R.id.loginButton);
@@ -39,17 +39,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerButton.setOnClickListener(this);
         loginButton.setOnClickListener(this);
 
-        FirebaseMessaging.getInstance().subscribeToTopic("notifications");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser currentUser) {
+        // if signed-in, take user to the Home Activity page
         if(currentUser != null){
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         email = getEmail.getText().toString();
         password = getPassword.getText().toString();
 
+        // Make sure username and password are not empty
         if(TextUtils.isEmpty(email)){
             Toast.makeText(this, "Please enter email!", Toast.LENGTH_SHORT).show();
             return;
@@ -77,12 +79,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.registerButton:
                 // register
                 createAccount(email, password);
-                //Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.loginButton:
                 // login
                 signIn(email, password);
-                //Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

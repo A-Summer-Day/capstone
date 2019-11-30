@@ -37,7 +37,7 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private View view;
     private CalendarView calendar;
     private CheckBox logTemperature;
@@ -48,7 +48,7 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
     private FirebaseUser currentUser;
     private String selectedYear, selectedMonth, selectedDayOfMonth, selectedDate;
     private SimpleDateFormat sdf;
-    private boolean updating;
+    private boolean updating; // flag to keep track of whether user is allowed to edit or not
     private boolean checked;
     private View editInfo;
 
@@ -76,8 +76,8 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
         getTemperature.setEnabled(false);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
-        calendar.setMaxDate(new Date().getTime());
+        myref = myref.child(currentUserId); // set database reference path to current user id
+        calendar.setMaxDate(new Date().getTime()); // disable future dates on calendar
 
         Long date = calendar.getDate();
 
@@ -85,21 +85,21 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
         SimpleDateFormat mf = new SimpleDateFormat("MM");
         SimpleDateFormat yf = new SimpleDateFormat("yyyy");
         sdf = new SimpleDateFormat("dd/MM/yyyy");
-        selectedDate = sdf.format(date);
-        selectedDayOfMonth = df.format(date);
-        selectedMonth = mf.format(date);
-        selectedYear = yf.format(date);
+        selectedDate = sdf.format(date); // get current date
+        selectedDayOfMonth = df.format(date); // get current day of month
+        selectedMonth = mf.format(date); // get current month
+        selectedYear = yf.format(date); // get current year
         editInfo = view.findViewById(R.id.addInfo);
-        editInfo.setVisibility(View.GONE);
+        editInfo.setVisibility(View.GONE); // hide edit view
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-                    logTemperature.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
-
+                }else{ // if data exists
+                    logTemperature.setChecked(true); // check the box
+                    editInfo.setVisibility(View.VISIBLE); // show data details
+                    // set temperature to temperature retrieved from data
                     temperature = dataSnapshot.child("temperature").getValue().toString();
                     getTemperature.setText(temperature);
 
@@ -112,6 +112,7 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
             }
         };
 
+        // Check if there is any mood data for this user on current date
         myref.child("temperature-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
 
@@ -124,14 +125,16 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
         checked = logTemperature.isChecked();
         switch (v.getId()){
             case R.id.editTemperatureDetailsButton:
-                updating = updateInfo(updating);
+                updating = updateInfo(updating); //update info
                 break;
             case R.id.logTemperature:
                 if(checked){
+                    // if user checks a date, add that date data to cloud
                     myref.child("temperature-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth + "/temperature").setValue(temperature);
                     editInfo.setVisibility(View.VISIBLE);
                 }else{
+                    // if user un-checks a date, remove that date data from cloud
                     myref.child("temperature-tracking/" + selectedYear + "/" + selectedMonth + "/" +
                             selectedDayOfMonth).removeValue();
                     editInfo.setVisibility(View.GONE);
@@ -143,29 +146,29 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
 
     @Override
     public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-        selectedYear = Integer.toString(year);
-        selectedMonth = Integer.toString(month + 1);
-        selectedDayOfMonth = Integer.toString(dayOfMonth);
+        selectedYear = Integer.toString(year); // update selected year
+        selectedMonth = Integer.toString(month + 1); // update selected month
+        selectedDayOfMonth = Integer.toString(dayOfMonth); // update selected day of month
 
-        logTemperature.setChecked(false);
-        editInfo.setVisibility(View.GONE);
-        temperature = Integer.toString(37);
-        getTemperature.setText(temperature);
+        logTemperature.setChecked(false); // uncheck the log box
+        editInfo.setVisibility(View.GONE); // hide details
+        temperature = Integer.toString(37); // reset temperature to default
+        getTemperature.setText(temperature); // set default temperature
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-                    logTemperature.setChecked(true);
-                    editInfo.setVisibility(View.VISIBLE);
+                }else{ // if data exists
+                    logTemperature.setChecked(true); // re-check the log box
+                    editInfo.setVisibility(View.VISIBLE); // show details
 
+                    // set temperature value to temperature retrieved
                     temperature = dataSnapshot.child("temperature").getValue().toString();
 
                     getTemperature.setText(temperature);
 
-                    Log.d("SNAPSHOT",dataSnapshot.toString());
                 }
             }
 
@@ -175,24 +178,25 @@ public class TemperatureTrackingFragment extends Fragment implements CalendarVie
             }
         };
 
+        // Check if there is any temperature data for this user at selected year and selected month
         myref.child("temperature-tracking").child(selectedYear).child(selectedMonth).
                 child(selectedDayOfMonth).addListenerForSingleValueEvent(valueEventListener);
     }
 
     private boolean updateInfo(boolean updating){
-        if(updating){
-            getTemperature.setEnabled(true);
-            editTemperatureDetailsButton.setImageResource(android.R.drawable.ic_menu_save);
+        if(updating){ // editing
+            getTemperature.setEnabled(true); // allow user to edit temperature
+            editTemperatureDetailsButton.setImageResource(android.R.drawable.ic_menu_save); // update the image button
             return false;
-        }else{
-            getTemperature.setEnabled(false);
+        }else{ // done editing
+            getTemperature.setEnabled(false); // disable temperature field
 
             temperature = getTemperature.getText().toString();
-
+            // update database
             myref.child("temperature-tracking").child(selectedYear).child(selectedMonth).
                     child(selectedDayOfMonth).child("temperature").setValue(temperature);
 
-            editTemperatureDetailsButton.setImageResource(android.R.drawable.ic_menu_edit);
+            editTemperatureDetailsButton.setImageResource(android.R.drawable.ic_menu_edit); // update the image button
             return true;
         }
     }

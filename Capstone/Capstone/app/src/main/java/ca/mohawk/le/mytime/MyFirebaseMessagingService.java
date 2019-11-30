@@ -28,6 +28,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        // if there is data payload, process it and send a notification
+        // this is so that user can still receive notification even if app is in foreground
+        // when app is in background, notification will be handled by cloud function
+        // index.js in the functions folder
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData().get("body"));
 
@@ -37,6 +41,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     public void showNotification(String title, String message) {
+        // Create a NotificationCompat.Builder object
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

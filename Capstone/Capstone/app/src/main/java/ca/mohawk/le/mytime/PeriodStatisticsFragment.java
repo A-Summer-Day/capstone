@@ -49,15 +49,15 @@ public class PeriodStatisticsFragment extends Fragment implements
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private String currentUserId, first, last;
     private FirebaseUser currentUser;
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth;
     private TextView typicalCycleLength, typicalPeriodLength, monthlyPeriodLength, monthlyPeriodRange;
     private Button viewStats;
-    static final int MAX_YEAR = 2099;
-    static final int MIN_YEAR = 1900;
+    static final int MAX_YEAR = 2099; // max year for calendar
+    static final int MIN_YEAR = 1900; // min year for calendar
     private int totalDays, totalCycles, totalMonthlyDays;
     private List<Date> dates;
 
@@ -95,41 +95,41 @@ public class PeriodStatisticsFragment extends Fragment implements
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
+        myref = myref.child(currentUserId); // set database reference path to current user id
 
         monthPicker = view.findViewById(R.id.month_picker);
         yearPicker = view.findViewById(R.id.year_picker);
 
-        yearPicker.setMinValue(MIN_YEAR);
-        yearPicker.setMaxValue(MAX_YEAR);
+        yearPicker.setMinValue(MIN_YEAR); // set min year
+        yearPicker.setMaxValue(MAX_YEAR); // set max year
         yearPicker.setOnValueChangedListener(this);
-        selectedYear = Integer.parseInt(yearFormat.format(date));
-        yearPicker.setValue(selectedYear);
+        selectedYear = Integer.parseInt(yearFormat.format(date)); // get current year
+        yearPicker.setValue(selectedYear);  // set current year as selected year
 
-        monthPicker.setMaxValue(12);
-        monthPicker.setMinValue(1);
+        monthPicker.setMaxValue(12); // set min month
+        monthPicker.setMinValue(1); // set max month
         monthPicker.setOnValueChangedListener(this);
-        selectedMonth = Integer.parseInt(monthFormat.format(date));
-        monthPicker.setValue(selectedMonth);
+        selectedMonth = Integer.parseInt(monthFormat.format(date)); // get current month
+        monthPicker.setValue(selectedMonth); // set current month as selected month
 
 
-        totalDays = 0;
-        totalCycles = 0;
-        totalMonthlyDays = 0;
+        totalDays = 0; // todal days that are period dates
+        totalCycles = 0; // total cycles
+        totalMonthlyDays = 0; // total days that are period dates within a specific month
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
+                if(!dataSnapshot.exists()){ // if there is no data
                     typicalCycleLength.setText("N/A");
                     typicalPeriodLength.setText("N/A");
-                }else {
+                }else { // if data exists
 
                     for (final DataSnapshot ds : dataSnapshot.getChildren()) {
                         if(ds.getChildrenCount() > 0){
 
                             for (final DataSnapshot ds1 : ds.getChildren()){
-                                List<Date> temp = new ArrayList<>();
+                                List<Date> temp = new ArrayList<>(); // temp list to store all logged dates of a month
                                 int count = (int) ds1.getChildrenCount();
                                 for(DataSnapshot ds2: ds1.getChildren()){
                                     DateFormat fullFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -143,9 +143,9 @@ public class PeriodStatisticsFragment extends Fragment implements
                                     }
                                 }
 
+                                // add just the first and last dates from that specific month
                                 dates.add(temp.get(0));
                                 dates.add(temp.get(temp.size() - 1));
-
 
                                 totalDays += count;
                                 totalCycles += 1;
@@ -153,12 +153,14 @@ public class PeriodStatisticsFragment extends Fragment implements
                         }
                     }
 
+                    // calculate and set typical period length
                     int pl = Math.round(totalDays/totalCycles);
                     typicalPeriodLength.setText(Integer.toString(pl));
                     Collections.sort(dates);
                     int days = getLength(dates);
-                    double periodLength =  (double)days/(totalCycles-1);
-                    typicalCycleLength.setText(Integer.toString((int) Math.round(periodLength)));
+                    // calculate and set typical cycle length
+                    double cycleLength =  (double)days/(totalCycles-1);
+                    typicalCycleLength.setText(Integer.toString((int) Math.round(cycleLength)));
                 }
             }
 
@@ -169,7 +171,7 @@ public class PeriodStatisticsFragment extends Fragment implements
         };
 
 
-
+        // Check if there is any period data for this user
         myref.child("period-tracking").addListenerForSingleValueEvent(valueEventListener);
 
         return view;
@@ -179,10 +181,16 @@ public class PeriodStatisticsFragment extends Fragment implements
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         switch(picker.getId()){
             case R.id.month_picker:
-                selectedMonth = newVal;
+                selectedMonth = newVal; // update selected month
+                // reset top half fields
+                monthlyPeriodRange.setText("");
+                monthlyPeriodLength.setText("");
                 break;
             case R.id.year_picker:
-                selectedYear = newVal;
+                selectedYear = newVal; // update selected year
+                // reset top half fields
+                monthlyPeriodRange.setText("");
+                monthlyPeriodLength.setText("");
                 break;
         }
 
@@ -196,13 +204,14 @@ public class PeriodStatisticsFragment extends Fragment implements
                 ValueEventListener vel = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists()){
+                        if(!dataSnapshot.exists()){ // if there is no data
                             monthlyPeriodRange.setText("N/A");
                             monthlyPeriodLength.setText("N/A");
-                        }else {
+                        }else { // if data exists
                             if(dataSnapshot.getChildrenCount() > 0){
                                 last = "";
                                 first = "";
+                                // find the first and last period date of that month
                                 myref.child("period-tracking").child(Integer.toString(selectedYear))
                                         .child(Integer.toString(selectedMonth)).orderByKey().limitToFirst(1)
                                         .addChildEventListener(new ChildEventListener() {
@@ -263,6 +272,7 @@ public class PeriodStatisticsFragment extends Fragment implements
                                     }
                                 });
 
+                                // set fields accordingly
                                 totalMonthlyDays += dataSnapshot.getChildrenCount();
                                 monthlyPeriodLength.setText(Integer.toString((int)totalMonthlyDays));
                             }
@@ -275,6 +285,8 @@ public class PeriodStatisticsFragment extends Fragment implements
 
                     }
                 };
+
+                // Check if there is any period data for this user at selected year and selected month
                 myref.child("period-tracking").child(Integer.toString(selectedYear)).child(Integer.
                         toString(selectedMonth)).addListenerForSingleValueEvent(vel);
 
@@ -283,14 +295,17 @@ public class PeriodStatisticsFragment extends Fragment implements
         }
     }
 
-
+    // return the total day differences between pairs of dates
     public int getLength(List<Date> dates){
         int length = 0;
+        // remove first and last dates because there is no previous date for first date
+        // and there is no following date for last date
         dates.remove(0);
         dates.remove(dates.size() - 1);
         for(int i = 0; i< dates.size(); i += 2){
             dates.get(i);
             dates.get(i+1);
+            // calculate the difference between each date pair
             int difference = (int)(dates.get(i).getTime() - dates.get(i+1).getTime());
             int days = (int)(difference / (1000 * 60 * 60 * 24));
             length += days;

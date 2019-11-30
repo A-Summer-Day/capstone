@@ -62,15 +62,15 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users"); // Database reference
     private String currentUserId;
     private FirebaseUser currentUser;
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth;
     private Button viewStats;
     private int happyCount, sadCount, neutralCount, daysInMonth;
-    static final int MAX_YEAR = 2099;
-    static final int MIN_YEAR = 1900;
+    static final int MAX_YEAR = 2099; // max year for calendar
+    static final int MIN_YEAR = 1900; // min year for calendar
     private float totalDays, totalCycles, totalMonthlyDays;
     public MoodStatisticsFragment() {
         // Required empty public constructor
@@ -93,25 +93,25 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
+        myref = myref.child(currentUserId); // set database reference path to current user id
 
         monthPicker = view.findViewById(R.id.month_picker);
         yearPicker = view.findViewById(R.id.year_picker);
 
-        yearPicker.setMinValue(MIN_YEAR);
-        yearPicker.setMaxValue(MAX_YEAR);
+        yearPicker.setMinValue(MIN_YEAR); // set min year
+        yearPicker.setMaxValue(MAX_YEAR); // set max year
         yearPicker.setOnValueChangedListener(this);
-        selectedYear = Integer.parseInt(yearFormat.format(date));
-        yearPicker.setValue(selectedYear);
+        selectedYear = Integer.parseInt(yearFormat.format(date)); // get current year
+        yearPicker.setValue(selectedYear); // set current year as selected year
 
-        monthPicker.setMaxValue(12);
-        monthPicker.setMinValue(1);
+        monthPicker.setMaxValue(12); // set min month
+        monthPicker.setMinValue(1); // set max month
         monthPicker.setOnValueChangedListener(this);
-        selectedMonth = Integer.parseInt(monthFormat.format(date));
-        monthPicker.setValue(selectedMonth);
+        selectedMonth = Integer.parseInt(monthFormat.format(date)); // get current month
+        monthPicker.setValue(selectedMonth); // set current month as selected month
 
         pieChart = view.findViewById(R.id.chart);
-        pieChart.setVisibility(View.GONE);
+        pieChart.setVisibility(View.GONE); // hide pie chart on page load
 
         return view;
     }
@@ -120,25 +120,24 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.viewStatsButton:
+                // calculate total days in a specific month
                 daysInMonth = selectedMonth == 2 ?
                         28 + (selectedYear % 4 == 0 ? 1:0) - (selectedYear % 100 == 0 ?
                                 (selectedYear % 400 == 0 ? 0 : 1) : 0) :
                         31 - (selectedMonth-1) % 7 % 2;
 
-                happyCount = 0;
-                sadCount = 0;
-                neutralCount = 0;
-                Log.d("REf YEAR", Integer.toString(selectedYear));
-                Log.d("REf MONTH", Integer.toString(selectedMonth));
+                happyCount = 0; // variable to keep track of happy days
+                sadCount = 0; // variable to keep track of sad days
+                neutralCount = 0; // variable to keep track of neutral days
+
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists()){
+                        if(!dataSnapshot.exists()){ // if there is no data
                             Toast.makeText(getActivity(), "No data to display.", Toast.LENGTH_SHORT).show();
-                        }else{
+                        }else{ // if data exists
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                Log.d("REf COUNT", Long.toString(dataSnapshot.getChildrenCount()));
-                                if(dataSnapshot.getChildrenCount()>0){
+                                if(dataSnapshot.getChildrenCount()>0){ // increment counts accordingly
                                     if(ds.child("mood").getValue().equals("Sad")){
                                         sadCount++;
                                     }else if(ds.child("mood").getValue().equals("Happy")){
@@ -147,39 +146,36 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
                                         neutralCount++;
                                     }
                                 }
+
+
                                 pieEntries = new ArrayList<>();
                                 pieEntries.add(new PieEntry((float)happyCount/daysInMonth, "Happy"));
                                 pieEntries.add(new PieEntry((float)sadCount/daysInMonth, "Sad"));
                                 pieEntries.add(new PieEntry((float)neutralCount/daysInMonth, "Neutral"));
-                                Log.d("REf HAPPy", Integer.toString(happyCount));
-                                Log.d("REf SAD", Integer.toString(sadCount));
-                                Log.d("REf NEUTRAL", Integer.toString(neutralCount));
 
-
+                                // calculate days with no data
                                 int remainingCount = daysInMonth - (sadCount+happyCount+neutralCount);
-                                Log.d("REf REMAINING", Integer.toString(remainingCount));
                                 pieEntries.add(new PieEntry((float)remainingCount/daysInMonth, "N/A"));
+
 
                                 pieDataSet = new PieDataSet(pieEntries, "");
                                 pieDataSet.setValueFormatter(new MyValueFormatter());
 
                                 pieData = new PieData(pieDataSet);
-                                pieChart.setData(pieData);
-                                pieChart.setUsePercentValues(true);
+                                pieChart.setData(pieData); // set data for pie chart
+                                pieChart.setUsePercentValues(true); // show %
                                 pieData.setValueTextSize(10f);
-                                //pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
                                 pieDataSet.setColors(Color.parseColor("#F08080"),Color.parseColor("#87CEFA"),
                                         Color.parseColor("#C0C0C0"), Color.parseColor("#F5F5F5"));
                                 pieChart.setEntryLabelTextSize(10f);
                                 pieChart.setEntryLabelColor(Color.BLACK);
                                 Legend legend = pieChart.getLegend();
-                                Log.d("REF LEGEND", legend.toString());
                                 legend.setTextSize(15f);
 
                                 pieChart.setDrawHoleEnabled(false);
                                 pieChart.getDescription().setEnabled(false);
                                 pieChart.invalidate();
-                                pieChart.setVisibility(View.VISIBLE);
+                                pieChart.setVisibility(View.VISIBLE); // show pie chart
                             }
                         }
                     }
@@ -190,6 +186,7 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
                     }
                 };
 
+                // Check if there is any mood data for this user at selected year and selected month
                 myref.child("mood-tracking").child(Integer.toString(selectedYear))
                         .child(Integer.toString(selectedMonth))
                         .addListenerForSingleValueEvent(valueEventListener);
@@ -200,13 +197,13 @@ public class MoodStatisticsFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        pieChart.setVisibility(View.GONE);
+        pieChart.setVisibility(View.GONE); // hide pie chart when month changes
         switch(picker.getId()){
             case R.id.month_picker:
-                selectedMonth = newVal;
+                selectedMonth = newVal; // update selected year
                 break;
             case R.id.year_picker:
-                selectedYear = newVal;
+                selectedYear = newVal; // update selected month
                 break;
         }
     }

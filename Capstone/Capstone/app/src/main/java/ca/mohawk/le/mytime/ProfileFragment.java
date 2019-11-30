@@ -57,7 +57,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     //StorageReference imageRef = storageRef.child("profile.jpg");
     StorageReference imageRef;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference();
+    DatabaseReference myref = database.getReference(); // Database reference
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
     private EditText name, dob, email, phone;
@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ImageView profilePicture;
     private FirebaseUser currentUser;
     private String currentUserId;
-    private boolean updating;
+    private boolean updating; // flag to keep track of whether user is allowed to edit or not
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -90,11 +90,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         fm = getFragmentManager();
         fragmentTransaction = fm.beginTransaction();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = currentUser.getUid();
+        currentUserId = currentUser.getUid(); // set database reference path to current user id
 
         if(currentUser != null){
-            email.setText(currentUser.getEmail());
-            imageRef = storageRef.child("profile_" + currentUserId);
+            email.setText(currentUser.getEmail()); // display email
+            imageRef = storageRef.child("profile_" + currentUserId); // set profile picture storage reference
 
         }
 
@@ -108,8 +108,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
 
-                }else{
-
+                }else{ // if data exists
+                    // set the fields accordingly
                     String getName = dataSnapshot.child("name").getValue().toString();
                     String getPhone = dataSnapshot.child("phone").getValue().toString();
                     String getDob = dataSnapshot.child("dob").getValue().toString();
@@ -126,13 +126,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         };
 
+        // Check if there is any personal info data for this user
         myref.child("users").child(currentUserId).child("personal-info").
                 addListenerForSingleValueEvent(valueEventListener);
+
         profilePicture = view.findViewById(R.id.profilePicture);
         editButton = view.findViewById(R.id.editInfoButton);
         //Glide.with(this).load("https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg").into(profilePicture);
         profilePicture.setOnClickListener(this);
         editButton.setOnClickListener(this);
+
+        // check and set profile picture if it exists
         imageRef.getMetadata().addOnSuccessListener(
                 new OnSuccessListener<StorageMetadata>() {
                     @Override
@@ -144,7 +148,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             }
                         });
 
-                        //Toast.makeText(getActivity(), "Profile picture existed!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 //
@@ -165,12 +168,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.profilePicture:
+                // let user chooses image to upload
                 chooseImage();
                 break;
             case R.id.editInfoButton:
-                updating = updateInfo(updating);
+                updating = updateInfo(updating); // update info
                 break;
             case R.id.changePasswordButton:
+                // take user to the change password page
                 ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
                 fragmentTransaction.replace(R.id.generalLayout, changePasswordFragment);
                 fragmentTransaction.commit();
@@ -179,12 +184,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void chooseImage() {
+        // get images from device gallery
         startActivityForResult(new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // if getting image is successful, display it
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK){
 
@@ -215,6 +222,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
 
+        // Upload image to FireBase Storage
         UploadTask uploadTask = imageRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -237,19 +245,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         phone = view.findViewById(R.id.phoneNumber);
         editButton = view.findViewById(R.id.editInfoButton);
 
-        if(updating){
+        if(updating){ // editing
+            // enable all fields
             name.setEnabled(true);
             dob.setEnabled(true);
             email.setEnabled(true);
             phone.setEnabled(true);
-            editButton.setImageResource(android.R.drawable.ic_menu_save);
+            editButton.setImageResource(android.R.drawable.ic_menu_save); // change button image to save
             return false;
-        }else{
+        }else{ // done editing
             final String newName = name.getText().toString();
             String newDOB = dob.getText().toString();
             final String newEmail = email.getText().toString();
             String newPhone = phone.getText().toString();
 
+            // update user email
             currentUser.updateEmail(newEmail)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -261,15 +271,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         }
                     });
 
+            // update user info
             myref.child("users").child(currentUserId).child("personal-info").child("phone").setValue(newPhone);
             myref.child("users").child(currentUserId).child("personal-info").child("name").setValue(newName);
             myref.child("users").child(currentUserId).child("personal-info").child("dob").setValue(newDOB);
 
+            // disable all fields
             name.setEnabled(false);
             dob.setEnabled(false);
             email.setEnabled(false);
             phone.setEnabled(false);
-            editButton.setImageResource(android.R.drawable.ic_menu_edit);
+            editButton.setImageResource(android.R.drawable.ic_menu_edit); // change button image to edit image
             return true;
         }
     }

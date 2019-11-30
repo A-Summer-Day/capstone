@@ -52,21 +52,25 @@ public class ReportsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.periodStatistics:
+                // take user to period stats page
                 PeriodStatisticsFragment periodStatisticsFragment = new PeriodStatisticsFragment();
                 fragmentTransaction.replace(R.id.generalLayout, periodStatisticsFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.sexualActivityStatistics:
+                // take user to sexual activity stats page
                 SexualActivityStatisticsFragment sexualActivityStatisticsFragment = new SexualActivityStatisticsFragment();
                 fragmentTransaction.replace(R.id.generalLayout, sexualActivityStatisticsFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.moodsStatistics:
+                // take user to mood stats page
                 MoodStatisticsFragment moodStatisticsFragment = new MoodStatisticsFragment();
                 fragmentTransaction.replace(R.id.generalLayout, moodStatisticsFragment);
                 fragmentTransaction.commit();
                 break;
             case R.id.temperatureStatistics:
+                // take user to temperature stats page
                 TemperatureStatisticsFragment temperatureStatisticsFragment = new TemperatureStatisticsFragment();
                 fragmentTransaction.replace(R.id.generalLayout, temperatureStatisticsFragment);
                 fragmentTransaction.commit();

@@ -30,9 +30,10 @@ public class FirebaseIDService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String token) {
+        // Get the current user and save new token to database
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
+
         myref.child(currentUserId).child("token").setValue(token);
-        // Add custom implementation, as needed.
     }
 }

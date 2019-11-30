@@ -64,14 +64,14 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
     private FragmentManager fm;
     private FragmentTransaction fragmentTransaction;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myref = database.getReference().child("users");
+    DatabaseReference myref = database.getReference().child("users");  // Database reference
     private String currentUserId;
     private FirebaseUser currentUser;
     private NumberPicker monthPicker, yearPicker;
     private int selectedYear, selectedMonth, daysInMonth;
     private Button viewStats;
-    static final int MAX_YEAR = 2099;
-    static final int MIN_YEAR = 1900;
+    static final int MAX_YEAR = 2099; // max year for calendar
+    static final int MIN_YEAR = 1900; // min year for calendar
 
     public TemperatureStatisticsFragment() {
         // Required empty public constructor
@@ -94,25 +94,25 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        myref = myref.child(currentUserId);
+        myref = myref.child(currentUserId); // set database reference path to current user id
 
         monthPicker = view.findViewById(R.id.month_picker);
         yearPicker = view.findViewById(R.id.year_picker);
 
-        yearPicker.setMinValue(MIN_YEAR);
-        yearPicker.setMaxValue(MAX_YEAR);
+        yearPicker.setMinValue(MIN_YEAR); // set min year
+        yearPicker.setMaxValue(MAX_YEAR); // set max year
         yearPicker.setOnValueChangedListener(this);
-        selectedYear = Integer.parseInt(yearFormat.format(date));
-        yearPicker.setValue(selectedYear);
+        selectedYear = Integer.parseInt(yearFormat.format(date)); // get current year
+        yearPicker.setValue(selectedYear); // set current year as selected year
 
-        monthPicker.setMaxValue(12);
-        monthPicker.setMinValue(1);
+        monthPicker.setMaxValue(12); // set min month
+        monthPicker.setMinValue(1); // set max month
         monthPicker.setOnValueChangedListener(this);
-        selectedMonth = Integer.parseInt(monthFormat.format(date));
-        monthPicker.setValue(selectedMonth);
+        selectedMonth = Integer.parseInt(monthFormat.format(date)); // get current month
+        monthPicker.setValue(selectedMonth);  // set current month as selected month
 
         lineChart = view.findViewById(R.id.chart);
-        lineChart.setVisibility(View.GONE);
+        lineChart.setVisibility(View.GONE); // hide line chart on page load
 
         return view;
     }
@@ -121,23 +121,25 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.viewStatsButton:
+                // calculate total days in a specific month
                 daysInMonth = selectedMonth == 2 ?
                         28 + (selectedYear % 4 == 0 ? 1:0) - (selectedYear % 100 == 0 ?
                                 (selectedYear % 400 == 0 ? 0 : 1) : 0) :
                         31 - (selectedMonth-1) % 7 % 2;
 
-                Log.d("REf YEAR", Integer.toString(selectedYear));
-                Log.d("REf MONTH", Integer.toString(selectedMonth));
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists()){
+                        if(!dataSnapshot.exists()){ // if there is no data
                             Toast.makeText(getActivity(), "No data to display.", Toast.LENGTH_SHORT).show();
-                        }else{
+                        }else{ // if data exists
+                            // initialize the data with default value 37
                             lineEntries = new ArrayList<>(daysInMonth);
                             for(int i = 0; i < daysInMonth; i++){
                                 lineEntries.add(new Entry(i+1,37));
                             }
+
+                            // if there is data for any date, change it
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 if(dataSnapshot.getChildrenCount()>0){
                                     float temp = Float.parseFloat(ds.child("temperature").getValue().toString());
@@ -159,12 +161,12 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
                                 legend.setTextSize(15f);
                                 legend.setTextColor(Color.parseColor("#F08080"));
                                 lineData = new LineData(lineDataSet);
-                                lineChart.setData(lineData);
+                                lineChart.setData(lineData); // set data for line chart
                                 lineDataSet.setDrawValues(false);
                                 lineDataSet.setDrawCircles(false);
                                 lineChart.getDescription().setEnabled(false);
                                 lineChart.invalidate();
-                                lineChart.setVisibility(View.VISIBLE);
+                                lineChart.setVisibility(View.VISIBLE); // show line chart
                             }
                         }
                     }
@@ -175,6 +177,7 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
                     }
                 };
 
+                // Check if there is any temperature data for this user at selected year and selected month
                 myref.child("temperature-tracking").child(Integer.toString(selectedYear))
                         .child(Integer.toString(selectedMonth))
                         .addListenerForSingleValueEvent(valueEventListener);
@@ -185,13 +188,13 @@ public class TemperatureStatisticsFragment extends Fragment implements View.OnCl
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-        lineChart.setVisibility(View.GONE);
+        lineChart.setVisibility(View.GONE); // hide line chart when month changes
         switch(picker.getId()){
             case R.id.month_picker:
-                selectedMonth = newVal;
+                selectedMonth = newVal; // update selected month
                 break;
             case R.id.year_picker:
-                selectedYear = newVal;
+                selectedYear = newVal; // update selected year
                 break;
         }
     }
